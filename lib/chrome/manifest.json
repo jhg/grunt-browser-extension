@@ -1,21 +1,22 @@
 {
-  "manifest_version": 2,
-  "name": "%name%",
-  "version": "%version%",
-  "description": "%description%",
-  "author": "%author%",
-  "icons": {
-    "16": "icon16.png",
-    "64": "icon64.png",
-    "128": "icon128.png"
-  },
-  "content_scripts": [{
-    "matches": ["http://%host%/*", "https://%host%/*"],
-    "js": ["%injectJS%"],
-    "css": ["%injectCSS%"]
-  }],
-  "web_accessible_resources": [
-    "images/*.png",
-    "images/*.svg"
-  ]
+    "manifest_version": 2,
+    "name": "%name%",
+    "version": "%version%",
+    "description": "%description%",
+    "author": "%author%",
+    "icons": {
+        "16": "icon16.png",
+        "64": "icon64.png",
+        "128": "icon128.png",
+        "256": "icon256.png"
+    },
+    "content_scripts": [{
+        "matches": ["http://%host%/*", "https://%host%/*"],
+        "js": ["%injectJS%"],
+        "css": ["%injectCSS%"]
+    }],
+    "web_accessible_resources": [
+        "images/*.png",
+        "images/*.svg"
+    ]
 }

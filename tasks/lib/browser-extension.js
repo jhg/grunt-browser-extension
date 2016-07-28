@@ -119,12 +119,12 @@ browserExtension.prototype._makeIcons = function (applicationDir, icon) {
 
     var raw = shell.exec(identifyArgs, {silent: true}).output;
     var options = JSON.parse(raw);
-    if (options.height !== 128 || options.width !== 128) {
-        grunt.fail.fatal("Icon must be 128px x 128px");
-        grunt.fail.fatal("Your icon is:", options.height, 'px x ', options.width, 'px');
+    if (options.height !== 256 || options.width !== options.height) {
+        grunt.log.warn("Icon must be 128px x 128px");
+        grunt.fail.fatal('Your icon is: ' + options.height + 'px x ' + options.width + 'px');
     }
 
-    var sizes = [16, 48, 64, 128];
+    var sizes = [16, 48, 64, 128, 256];
 
     fs.mkdir('build/icons');
     shell.cp(applicationDir + '/' + icon, 'build/icons/icon.png');
