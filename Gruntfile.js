@@ -40,6 +40,7 @@ module.exports = function(grunt) {
         browser_extension: {
             default: {
                 options: {
+                    directory: 'test/fixtures/application',
                     id: 'com.browser.extension',
                     name: 'Browser extension',
                     version: '0.1.0',
@@ -47,7 +48,6 @@ module.exports = function(grunt) {
                     description: 'browser extension',
                     author: 'Aleksey Dmitriev',
                     icon: 'icon.png',
-                    directory: 'test/fixtures/application',
                     content_scripts: {
                         js: ['app.min.js'],
                         css: ['styles.css']
