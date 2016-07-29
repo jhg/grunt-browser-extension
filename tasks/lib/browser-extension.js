@@ -7,12 +7,14 @@
  */
 'use strict';
 
+var grunt;
 var fs = require('fs-extra');
 var path = require('path');
 var shell = require('shelljs');
 var handlebars = require('handlebars');
-
-var grunt;
+handlebars.registerHelper('json', function(context) {
+    return new handlebars.SafeString(JSON.stringify(context));
+});
 
 
 // Prototype for build extensions for each browser
@@ -57,6 +59,12 @@ browserExtension.prototype.copyUserFiles = function() {
     var icon = this.options.icon;
 
     this._makeIcons(applicationDir, icon);
+    if (this.options.chrome_url_overrides) {
+        this._copyFiles(applicationDir, Object.values(this.options.chrome_url_overrides));
+    }
+    if (this.options.background && this.options.background.scripts) {
+        this._copyFiles(applicationDir, this.options.background.scripts);
+    }
     if (this.options.content_scripts) {
         var content_scripts_jsFiles = this.options.content_scripts.js;
         var content_scripts_cssFiles = this.options.content_scripts.css;

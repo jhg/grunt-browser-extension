@@ -4,33 +4,49 @@
     "version": "{{version}}",
     "description": "{{description}}",
     "author": "{{author}}",
+    {{#if content_scripts}}
+    "content_scripts": [{
+        {{#if content_scripts.js}}
+        "js": {{json content_scripts.js}},
+        {{/if}}
+        {{#if content_scripts.css}}
+        "css": {{json content_scripts.css}},
+        {{/if}}
+        "matches": ["http://{{host}}/*", "https://{{host}}/*"]
+    }],
+    {{/if}}
+    {{#if web_accessible_resources}}
+    "js": [
+      {{#each web_accessible_resources}}
+          "{{this}}",
+      {{/each}}
+    ],
+    {{/if}}
+    {{#if homepage_url}}
+    "homepage_url": "{{homepage_url}}",
+    {{/if}}
+    {{#if background}}
+    "background": {{json background}},
+    {{/if}}
+    {{#if content_security_policy}}
+    "content_security_policy": "{{content_security_policy}}",
+    {{/if}}
+    {{#if permissions}}
+    "permissions": {{json permissions}},
+    {{/if}}
+    {{#if web_accessible_resources}}
+    "web_accessible_resources": {{json web_accessible_resources}},
+    {{/if}}
+    {{#if browser_action}}
+    "browser_action": {{json browser_action}},
+    {{/if}}
+    {{#if chrome_url_overrides}}
+    "chrome_url_overrides": {{json chrome_url_overrides}},
+    {{/if}}
     "icons": {
         "16": "icon16.png",
         "64": "icon64.png",
         "128": "icon128.png",
         "256": "icon256.png"
-    },
-    {{#if content_scripts}}
-    "content_scripts": [{
-        {{#if content_scripts.js}}
-        "js": [
-          {{#each content_scripts.js}}
-              "{{this}}",
-          {{/each}}
-        ],
-        {{/if}}
-        {{#if content_scripts.css}}
-        "css": [
-          {{#each content_scripts.css}}
-              "{{this}}",
-          {{/each}}
-        ],
-        {{/if}}
-        "matches": ["http://{{host}}/*", "https://{{host}}/*"]
-    }],
-    {{/if}}
-    "web_accessible_resources": [
-        "images/*.png",
-        "images/*.svg"
-    ]
+    }
 }
