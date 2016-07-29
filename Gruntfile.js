@@ -47,7 +47,11 @@ module.exports = function(grunt) {
                     description: 'browser extension',
                     author: 'Aleksey Dmitriev',
                     icon: 'icon.png',
-                    directory: 'test/fixtures/application'
+                    directory: 'test/fixtures/application',
+                    content_scripts: {
+                        javascripts: ['app.min.js'],
+                        stylesheets: ['styles.css']
+                    }
                 }
             }
         },

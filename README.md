@@ -48,28 +48,24 @@ grunt.initConfig({
 
 ```js
 grunt.initConfig({
-  browser_extension: {
-     default: {
-        options: {
-           variables: {
-               id: 'com.browser.extension', // required application id for Safari and Firefox
-               name: 'Browser extension', // required application name
-               version: '0.1.0', // required application version
-               host: '*.google.com', // required match host, default is *
-               description: 'browser extension', // required  description
-               author: 'Aleksey Dmitriev' // required Author
-           },
-           files: {
-               inject: {
-                   directory: 'application', // path to your application files
-                   javascripts: ['app.min.js', 'extension.js'], // list of js files relative to application directory
-                   stylesheets: ['styles.css', 'module.css'] // list of css files relative to application directory
-               },
-               icon: 'application/icon.png' // path to application icon
-           }
+    browser_extension: {
+        default: {
+            options: {
+                id: 'com.browser.extension',
+                name: 'Browser extension',
+                version: '0.1.0',
+                host: '*.google.com',
+                description: 'browser extension',
+                author: 'Aleksey Dmitriev',
+                icon: 'icon.png',
+                directory: 'test/fixtures/application',
+                content_scripts: {
+                    javascripts: ['app.min.js'],
+                    stylesheets: ['styles.css']
+                }
+            }
         }
-       }
-  },
+    },
 });
 ```
 
