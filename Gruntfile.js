@@ -47,6 +47,7 @@ module.exports = function(grunt) {
                     host: '*.google.com',
                     description: 'browser extension',
                     author: 'Aleksey Dmitriev',
+                    license: 'MIT',
                     icon: 'icon.png',
                     content_scripts: {
                         js: ['app.min.js'],
