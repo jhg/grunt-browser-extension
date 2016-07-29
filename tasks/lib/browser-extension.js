@@ -22,9 +22,16 @@ var browserExtension = function(root, options) {
     this.root = root;
     this.options = options;
     this.browserFiles = {
-        chrome: ['manifest.json'],
-        firefox: ['package.json', 'lib/index.js'],
-        safari: ['Info.plist']
+        chrome: [
+            'manifest.json'
+        ],
+        firefox: [
+            'package.json',
+            'lib/index.js'
+        ],
+        safari: [
+            'Info.plist'
+        ]
     };
 };
 
