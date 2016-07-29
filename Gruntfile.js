@@ -35,7 +35,10 @@ module.exports = function(grunt) {
         },
         // Before generating any new files, remove any previously-created files.
         clean: {
-            tests: ['tmp', 'build']
+            tests: [
+                'tmp',
+                'build'
+            ]
         },
         // Configuration to be run (and then tested).
         browser_extension: {
@@ -51,15 +54,21 @@ module.exports = function(grunt) {
                     license: 'MIT',
                     icon: 'icon.png',
                     content_scripts: {
-                        js: ['app.min.js'],
-                        css: ['styles.css']
+                        js: [
+                            'app.min.js'
+                        ],
+                        css: [
+                            'styles.css'
+                        ]
                     }
                 }
             }
         },
         // Unit tests.
         nodeunit: {
-            tests: ['test/*_test.js']
+            tests: [
+                'test/*_test.js'
+            ]
         }
     });
     // Actually load this plugin's task(s).
