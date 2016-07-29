@@ -64,7 +64,7 @@ grunt.initConfig({
     },
 });
 ```
-
+#### Options list
  * directory: Source code directory (like ```src``` for example) where search files of extension.
  * id: Id of extension for Safari and Firefox extension.
  * name: Name of extension.

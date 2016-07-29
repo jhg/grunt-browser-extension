@@ -12,8 +12,11 @@ var fs = require('fs-extra');
 var path = require('path');
 var shell = require('shelljs');
 var handlebars = require('handlebars');
-handlebars.registerHelper('json', function(context) {
-    return new handlebars.SafeString(JSON.stringify(context));
+
+
+// Useful helper for render JSON in templates of extensions
+handlebars.registerHelper('json', function(value) {
+    return new handlebars.SafeString(JSON.stringify(value));
 });
 
 
