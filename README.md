@@ -45,12 +45,13 @@ grunt.initConfig({
 
 ### Options
 
-
+#### Example
 ```js
 grunt.initConfig({
     browser_extension: {
         default: {
             options: {
+                directory: 'test/fixtures/application',
                 id: 'com.browser.extension',
                 name: 'Browser extension',
                 version: '0.1.0',
@@ -58,7 +59,6 @@ grunt.initConfig({
                 description: 'browser extension',
                 author: 'Aleksey Dmitriev',
                 icon: 'icon.png',
-                directory: 'test/fixtures/application',
                 content_scripts: {
                     js: ['app.min.js'],
                     css: ['styles.css']
@@ -69,6 +69,21 @@ grunt.initConfig({
 });
 ```
 
+ * directory: Source code directory (like ```src``` for example) where search files of extension.
+ * id: Id of extension for Safari and Firefox extension.
+ * name: Name of extension.
+ * version: Version of extension.
+ * description: Description of extension.
+ * author: Author fo extension.
+ * content_scripts: Content scripts are JavaScript files that run in the context of web pages. (Chrome, Firefox & Safari).
+ * web_accessible_resources: (Chrome).
+ * homepage_url: (Chrome).
+ * background: (Chrome).
+ * content_security_policy: (Chrome).
+ * permissions: (Chrome).
+ * chrome_url_override: (Chrome).
+ * icon: Icon of 256x256px of extension, it will generate icon16.pne, icon64.png, icon128.png and icon256.png for use in extension.
+ * browser_action: (Chrome). Remember use icon16.pne, icon64.png, icon128.png or icon256.png, it's generate from icon configuration.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
