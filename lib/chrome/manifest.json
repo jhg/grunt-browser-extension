@@ -15,13 +15,6 @@
         "matches": ["http://{{host}}/*", "https://{{host}}/*"]
     }],
     {{/if}}
-    {{#if web_accessible_resources}}
-    "js": [
-      {{#each web_accessible_resources}}
-          "{{this}}",
-      {{/each}}
-    ],
-    {{/if}}
     {{#if homepage_url}}
     "homepage_url": "{{homepage_url}}",
     {{/if}}
