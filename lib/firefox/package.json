@@ -1,11 +1,11 @@
 {
-    "title": "%name%",
-    "name": "%id%",
-    "version": "%version%",
-    "description": "%description%",
+    "title": "{{name}}",
+    "name": "{{id}}",
+    "version": "{{version}}",
+    "description": "{{description}}",
     "main": "lib/index.js",
-    "author": "%author%",
-    "icon": "resource://%id%/data/icon128.png",
+    "author": "{{author}}",
+    "icon": "resource://{{id}}/data/icon128.png",
     "engines": {
         "firefox": ">=38.0a1",
         "fennec": ">=38.0a1"

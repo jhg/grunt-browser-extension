@@ -10,16 +10,15 @@
 var fs = require('fs-extra');
 var path = require('path');
 var shell = require('shelljs');
+var handlebars = require('handlebars');
 
 var grunt;
 
 
 // Prototype for build extensions for each browser
-var browserExtension = function (root, options, files) {
+var browserExtension = function(root, options) {
     this.root = root;
     this.options = options;
-    this.files = files;
-
     this.browserFiles = {
         chrome: ['manifest.json'],
         firefox: ['package.json', 'lib/index.js'],
@@ -28,75 +27,54 @@ var browserExtension = function (root, options, files) {
 };
 
 // Method for copy files of extension with replace of values
-browserExtension.prototype.copyBrowserFiles = function () {
-    var self = this;
+browserExtension.prototype.copyBrowserFiles = function() {
     var options = this.options;
     var pluginRoot = this.root;
     var browserFiles = this.browserFiles;
 
-    var manifestJS = {
-        chrome: (function () {
-            return self.files.inject.javascripts.join('", "');
-        })(),
-        firefox: (function () {
-            return self.files.inject.javascripts.join('"), data.url("');
-        })(),
-        safari: (function () {
-            return self.files.inject.javascripts.join("</string>\n\t\t\t\t<string>");
-        })()
-    };
-
-    var manifestCSS = {
-        chrome: (function () {
-            return self.files.inject.stylesheets.join('", "');
-        })(),
-        firefox: (function () {
-            return self.files.inject.stylesheets.join('"), data.url("');
-        })(),
-        safari: (function () {
-            return self.files.inject.stylesheets.join("</string>\n\t\t\t<string>");
-        })()
-    };
-
     // Process each file from skeletons
-    Object.keys(browserFiles).forEach(function (browser) {
-        browserFiles[browser].forEach(function (filename) {
-            var content = grunt.file.read(path.join(pluginRoot, 'lib', browser, filename));
-
-            // Replace option value in template file
-            Object.keys(options).forEach(function (key) {
-                var re = new RegExp('%' + key + '%', "gm");
-                content = content.replace(re, options[key]);
-            });
-
-            var reJS = new RegExp('%injectJS%', "gm");
-            var reCSS = new RegExp('%injectCSS%', "gm");
-
-            content = content.replace(reJS, manifestJS[browser]);
-            content = content.replace(reCSS, manifestCSS[browser]);
-
-            grunt.file.write(path.join('build', browser, filename), content);
+    Object.keys(browserFiles).forEach(function(browser) {
+        browserFiles[browser].forEach(function(filename) {
+            // Compile template from content of file
+            var template = handlebars.compile(grunt.file.read(path.join(
+                pluginRoot,
+                'lib',
+                browser,
+                filename
+            )));
+            // Render template with a context and write to file
+            grunt.file.write(path.join(
+                'build',
+                browser,
+                filename
+            ), template(options));
         });
     });
 };
 
-browserExtension.prototype.copyUserFiles = function () {
-    var applicationDir = this.files.inject.directory;
-    var jsFiles = this.files.inject.javascripts;
-    var cssFiles = this.files.inject.stylesheets;
-    var icon = this.files.icon;
+browserExtension.prototype.copyUserFiles = function() {
+    var applicationDir = this.options.directory;
+    var icon = this.options.icon;
 
-
-    this._copyFiles(applicationDir, jsFiles);
-    this._copyFiles(applicationDir, cssFiles);
-    this._makeIcons(applicationDir,icon);
-
+    this._makeIcons(applicationDir, icon);
+    if (this.options.content_scripts) {
+        var content_scripts_jsFiles = this.options.content_scripts.javascripts;
+        var content_scripts_cssFiles = this.options.content_scripts.stylesheets;
+        if (content_scripts_jsFiles) {
+            this._copyFiles(applicationDir, content_scripts_jsFiles);
+        }
+        if (content_scripts_cssFiles) {
+            this._copyFiles(applicationDir, content_scripts_cssFiles);
+        }
+    }
 };
 
-browserExtension.prototype._copyFiles = function (applicationDir, files) {
+browserExtension.prototype._copyFiles = function(applicationDir, files) {
 
-    files.forEach(function (file) {
-        grunt.file.expand({cwd: applicationDir}, file).forEach(function (fileName) {
+    files.forEach(function(file) {
+        grunt.file.expand({
+            cwd: applicationDir
+        }, file).forEach(function(fileName) {
             if (grunt.file.isDir(applicationDir + '/' + fileName)) {
                 grunt.file.mkdir('build/chrome/' + fileName);
                 grunt.file.mkdir('build/firefox/data/' + fileName);
@@ -110,14 +88,16 @@ browserExtension.prototype._copyFiles = function (applicationDir, files) {
     });
 };
 
-browserExtension.prototype._makeIcons = function (applicationDir, icon) {
+browserExtension.prototype._makeIcons = function(applicationDir, icon) {
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
         applicationDir + '/' + icon
     ].join(' ');
 
-    var raw = shell.exec(identifyArgs, {silent: true}).output;
+    var raw = shell.exec(identifyArgs, {
+        silent: true
+    }).output;
     var options = JSON.parse(raw);
     if (options.height !== 256 || options.width !== options.height) {
         grunt.log.warn("Icon must be 128px x 128px");
@@ -129,7 +109,7 @@ browserExtension.prototype._makeIcons = function (applicationDir, icon) {
     fs.mkdir('build/icons');
     shell.cp(applicationDir + '/' + icon, 'build/icons/icon.png');
 
-    sizes.forEach(function (size) {
+    sizes.forEach(function(size) {
 
         var resizeArgs = [
             'convert',
@@ -139,7 +119,9 @@ browserExtension.prototype._makeIcons = function (applicationDir, icon) {
             'build/icons/icon' + size + '.png'
         ].join(' ');
 
-        shell.exec(resizeArgs, {silent: true});
+        shell.exec(resizeArgs, {
+            silent: true
+        });
     });
 
 
@@ -147,7 +129,7 @@ browserExtension.prototype._makeIcons = function (applicationDir, icon) {
 
 };
 
-browserExtension.prototype.build = function () {
+browserExtension.prototype.build = function() {
     /**
      * Building Firefox extension
      */
@@ -155,10 +137,14 @@ browserExtension.prototype.build = function () {
 
     var currentDir = shell.pwd();
     shell.cd('build/firefox/');
-    var result = shell.exec('jpm xpi', {silent: true});
-    if(result.code !== 0){
-        result = shell.exec('../../node_modules/.bin/jpm xpi', {silent: true});
-        if(result.code !== 0){
+    var result = shell.exec('jpm xpi', {
+        silent: true
+    });
+    if (result.code !== 0) {
+        result = shell.exec('../../node_modules/.bin/jpm xpi', {
+            silent: true
+        });
+        if (result.code !== 0) {
             grunt.fail.fatal('Can not run jpm for build xpi for Firefox');
         }
     }
@@ -176,7 +162,7 @@ browserExtension.prototype.build = function () {
 };
 
 
-module.exports = function (gruntModule) {
+module.exports = function(gruntModule) {
     grunt = gruntModule;
     return browserExtension;
 };

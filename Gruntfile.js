@@ -40,22 +40,14 @@ module.exports = function(grunt) {
         browser_extension: {
             default: {
                 options: {
-                    variables: {
-                        id: 'com.browser.extension',
-                        name: 'Browser extension',
-                        version: '0.1.0',
-                        host: '*.google.com',
-                        description: 'browser extension',
-                        author: 'Aleksey Dmitriev'
-                    },
-                    files: {
-                        inject: {
-                            directory: 'test/fixtures/application',
-                            javascripts: ['app.min.js', 'extension.js'],
-                            stylesheets: ['styles.css', 'module.css']
-                        },
-                        icon: 'icon.png'
-                    }
+                    id: 'com.browser.extension',
+                    name: 'Browser extension',
+                    version: '0.1.0',
+                    host: '*.google.com',
+                    description: 'browser extension',
+                    author: 'Aleksey Dmitriev',
+                    icon: 'icon.png',
+                    directory: 'test/fixtures/application'
                 }
             }
         },
@@ -71,7 +63,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
-
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
     // plugin's task(s), then test the result.
