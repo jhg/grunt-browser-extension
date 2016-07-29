@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "fs-extra": "^0.26.2",
+    "handlebars": "^4.0.5",
     "shelljs": "^0.5.3",
     "util": "^0.10.3"
   },
