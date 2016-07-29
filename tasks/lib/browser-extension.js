@@ -58,8 +58,8 @@ browserExtension.prototype.copyUserFiles = function() {
 
     this._makeIcons(applicationDir, icon);
     if (this.options.content_scripts) {
-        var content_scripts_jsFiles = this.options.content_scripts.javascripts;
-        var content_scripts_cssFiles = this.options.content_scripts.stylesheets;
+        var content_scripts_jsFiles = this.options.content_scripts.js;
+        var content_scripts_cssFiles = this.options.content_scripts.css;
         if (content_scripts_jsFiles) {
             this._copyFiles(applicationDir, content_scripts_jsFiles);
         }

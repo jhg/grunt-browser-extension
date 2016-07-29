@@ -20,21 +20,21 @@
 {{#if content_scripts}}
 	<dict>
 		<key>Scripts</key>
-		{{#if content_scripts.javascripts}}
+		{{#if content_scripts.js}}
 		<dict>
 			<key>Start</key>
 			<array>
-			  {{#each content_scripts.javascripts}}
+			  {{#each content_scripts.js}}
 					<string>{{this}}</string>
 			  {{/each}}
 			</array>
 		</dict>
 		{{/if}}
-		{{#if content_scripts.stylesheets}}
+		{{#if content_scripts.css}}
 		<dict>
 		  <key>Stylesheets</key>
 		  <array>
-			  {{#each content_scripts.stylesheets}}
+			  {{#each content_scripts.css}}
 					<string>{{this}}</string>
 			  {{/each}}
 		  </array>

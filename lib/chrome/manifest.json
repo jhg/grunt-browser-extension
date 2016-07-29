@@ -12,16 +12,16 @@
     },
     {{#if content_scripts}}
     "content_scripts": [{
-        {{#if content_scripts.javascripts}}
+        {{#if content_scripts.js}}
         "js": [
-          {{#each content_scripts.javascripts}}
+          {{#each content_scripts.js}}
               "{{this}}",
           {{/each}}
         ],
         {{/if}}
-        {{#if content_scripts.stylesheets}}
+        {{#if content_scripts.css}}
         "css": [
-          {{#each content_scripts.stylesheets}}
+          {{#each content_scripts.css}}
               "{{this}}",
           {{/each}}
         ],

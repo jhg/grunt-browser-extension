@@ -60,8 +60,8 @@ grunt.initConfig({
                 icon: 'icon.png',
                 directory: 'test/fixtures/application',
                 content_scripts: {
-                    javascripts: ['app.min.js'],
-                    stylesheets: ['styles.css']
+                    js: ['app.min.js'],
+                    css: ['styles.css']
                 }
             }
         }
