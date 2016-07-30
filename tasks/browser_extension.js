@@ -30,8 +30,8 @@ module.exports = function (grunt) {
         var pluginRoot = path.join(path.dirname(fs.realpathSync(__filename)), '../');
         var bExt = new BrowserExtension(pluginRoot, options, grunt);
 
-        bExt.copyBrowserFiles();
         bExt.copyUserFiles();
+        bExt.copyBrowserFiles();
         bExt.build();
     });
 };
