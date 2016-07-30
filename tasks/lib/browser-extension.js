@@ -70,7 +70,15 @@ browserExtension.prototype.copyUserFiles = function() {
 
     this._makeIcons(applicationDir, icon);
     if (this.options.chrome_url_overrides) {
-        this._copyFiles(applicationDir, Object.values(this.options.chrome_url_overrides));
+        if (this.options.chrome_url_overrides.bookmarks) {
+            this._copyFiles(applicationDir, this.options.chrome_url_overrides.bookmarks);
+        }
+        if (this.options.chrome_url_overrides.history) {
+            this._copyFiles(applicationDir, this.options.chrome_url_overrides.history);
+        }
+        if (this.options.chrome_url_overrides.newtab) {
+            this._copyFiles(applicationDir, this.options.chrome_url_overrides.newtab);
+        }
     }
     if (this.options.background && this.options.background.scripts) {
         this._copyFiles(applicationDir, this.options.background.scripts);
