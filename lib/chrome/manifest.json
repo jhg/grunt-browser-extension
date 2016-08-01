@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
-    "name": "{{name}}",
-    "version": "{{version}}",
-    "description": "{{description}}",
-    "author": "{{author}}",
+    "name": "{{{name}}}",
+    "version": "{{{version}}}",
+    "description": "{{{description}}}",
+    "author": "{{{author}}}",
     {{#if content_scripts}}
     "content_scripts": [{
         {{#if content_scripts.js}}
@@ -12,17 +12,17 @@
         {{#if content_scripts.css}}
         "css": {{json content_scripts.css}},
         {{/if}}
-        "matches": ["http://{{host}}/*", "https://{{host}}/*"]
+        "matches": ["http://{{{host}}}/*", "https://{{{host}}}/*"]
     }],
     {{/if}}
     {{#if homepage_url}}
-    "homepage_url": "{{homepage_url}}",
+    "homepage_url": "{{{homepage_url}}}",
     {{/if}}
     {{#if background}}
     "background": {{json background}},
     {{/if}}
     {{#if content_security_policy}}
-    "content_security_policy": "{{content_security_policy}}",
+    "content_security_policy": "{{{content_security_policy}}}",
     {{/if}}
     {{#if permissions}}
     "permissions": {{json permissions}},
