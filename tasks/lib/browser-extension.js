@@ -21,9 +21,10 @@ handlebars.registerHelper('json', function(value) {
 
 
 // Prototype for build extensions for each browser
-var browserExtension = function(root, options) {
+var browserExtension = function(root, options, target) {
     this.root = root;
     this.options = options;
+    this.target = target;
     this.browserFiles = {
         chrome: [
             'manifest.json'
@@ -43,6 +44,7 @@ browserExtension.prototype.copyBrowserFiles = function() {
     var options = this.options;
     var pluginRoot = this.root;
     var browserFiles = this.browserFiles;
+    var target = this.target;
 
     // Process each file from skeletons
     Object.keys(browserFiles).forEach(function(browser) {
@@ -57,6 +59,7 @@ browserExtension.prototype.copyBrowserFiles = function() {
             // Render template with a context and write to file
             grunt.file.write(path.join(
                 'build',
+                target,
                 browser,
                 filename
             ), template(options));
@@ -65,31 +68,32 @@ browserExtension.prototype.copyBrowserFiles = function() {
 };
 
 browserExtension.prototype.copyUserFiles = function() {
+    var self = this;
     grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
         if(subdir){
             filename = subdir + '/' + filename;
         }
-        grunt.file.copy(abspath, 'build/chrome/' + filename);
-        grunt.file.copy(abspath, 'build/firefox/data/' + filename);
-        grunt.file.copy(abspath, 'build/safari/' + filename);
+        grunt.file.copy(abspath, 'build/'+self.target+'/chrome/' + filename);
+        grunt.file.copy(abspath, 'build/'+self.target+'/firefox/data/' + filename);
+        grunt.file.copy(abspath, 'build/'+self.target+'/safari/' + filename);
     });
     this._makeIcons(this.options.directory, this.options.icon);
 };
 
 browserExtension.prototype._copyFiles = function(applicationDir, files) {
-
+    var self = this;
     files.forEach(function(file) {
         grunt.file.expand({
             cwd: applicationDir
         }, file).forEach(function(fileName) {
             if (grunt.file.isDir(applicationDir + '/' + fileName)) {
-                grunt.file.mkdir('build/chrome/' + fileName);
-                grunt.file.mkdir('build/firefox/data/' + fileName);
-                grunt.file.mkdir('build/safari/' + fileName);
+                grunt.file.mkdir('build/'+self.target+'/chrome/' + fileName);
+                grunt.file.mkdir('build/'+self.target+'/firefox/data/' + fileName);
+                grunt.file.mkdir('build/'+self.target+'/safari/' + fileName);
             } else {
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/chrome/' + fileName);
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/firefox/data/' + fileName);
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/safari/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/chrome/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/firefox/data/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/safari/' + fileName);
             }
         });
     });
@@ -97,9 +101,9 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
 
 browserExtension.prototype._makeIcons = function(applicationDir, icon) {
     var identifyArgs = ['identify',
-        '-format',
-        "'{ \"height\": %h, \"width\": %w}'",
-        applicationDir + '/' + icon
+    '-format',
+    "'{ \"height\": %h, \"width\": %w}'",
+    applicationDir + '/' + icon
     ].join(' ');
 
     var result = shell.exec(identifyArgs, {
@@ -146,12 +150,12 @@ browserExtension.prototype.build = function() {
 
 
     var currentDir = shell.pwd();
-    shell.cd('build/firefox/');
+    shell.cd('build/'+this.target+'/firefox/');
     var result = shell.exec('jpm xpi', {
         silent: true
     });
     if (result.code !== 0) {
-        result = shell.exec('../../node_modules/.bin/jpm xpi', {
+        result = shell.exec('../../../node_modules/.bin/jpm xpi', {
             silent: true
         });
         if (result.code !== 0) {
@@ -164,7 +168,7 @@ browserExtension.prototype.build = function() {
      * Prepare Safari extension
      */
 
-    shell.mv('build/safari', 'build/safari.safariextension');
+    shell.mv('build/'+this.target+'/safari', 'build/'+this.target+'/safari.safariextension');
     shell.rm('-rf', 'build/icons');
 
     grunt.log.ok('Extensions are in build directory');
