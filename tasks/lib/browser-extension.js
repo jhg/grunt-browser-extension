@@ -102,10 +102,13 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
         applicationDir + '/' + icon
     ].join(' ');
 
-    var raw = shell.exec(identifyArgs, {
+    var result = shell.exec(identifyArgs, {
         silent: true
-    }).output;
-    var options = JSON.parse(raw);
+    });
+    if(result.code !== 0){
+        grunt.fail.fatal('Need have installed imagemagick!');
+    }
+    var options = JSON.parse(result.output);
     if (options.height !== 256 || options.width !== options.height) {
         grunt.log.warn("Icon must be 128px x 128px");
         grunt.fail.fatal('Your icon is: ' + options.height + 'px x ' + options.width + 'px');
