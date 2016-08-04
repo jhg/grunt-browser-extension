@@ -70,9 +70,10 @@ browserExtension.prototype.copyBrowserFiles = function() {
 browserExtension.prototype.copyUserFiles = function() {
     var self = this;
     grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
+        var patterns = ['*.html', '*.js', '*.css'];
         var isTemplate = false;
-        for(var pattern in ['*.html', '*.js', '*.css']){
-            if(grunt.file.isMatch(pattern, filename)){
+        for(var pattern in patterns){
+            if(grunt.file.isMatch(patterns[pattern], filename)){
                 isTemplate = true;
                 break;
             }
