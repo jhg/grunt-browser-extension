@@ -70,12 +70,27 @@ browserExtension.prototype.copyBrowserFiles = function() {
 browserExtension.prototype.copyUserFiles = function() {
     var self = this;
     grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
+        var isTemplate = false;
+        for(var pattern in ['*.html', '*.js', '*.css']){
+            if(grunt.file.isMatch(pattern, filename)){
+                isTemplate = true;
+                break;
+            }
+        }
         if(subdir){
             filename = subdir + '/' + filename;
         }
-        grunt.file.copy(abspath, 'build/'+self.target+'/chrome/' + filename);
-        grunt.file.copy(abspath, 'build/'+self.target+'/firefox/data/' + filename);
-        grunt.file.copy(abspath, 'build/'+self.target+'/safari/' + filename);
+        if(isTemplate){
+            var template = handlebars.compile(grunt.file.read(path.join(abspath)));
+            var raw = template(self.options);
+            grunt.file.write('build/'+self.target+'/chrome/' + filename, raw);
+            grunt.file.write('build/'+self.target+'/firefox/data/' + filename, raw);
+            grunt.file.write('build/'+self.target+'/safari/' + filename, raw);
+        }else{
+            grunt.file.copy(abspath, 'build/'+self.target+'/chrome/' + filename);
+            grunt.file.copy(abspath, 'build/'+self.target+'/firefox/data/' + filename);
+            grunt.file.copy(abspath, 'build/'+self.target+'/safari/' + filename);
+        }
     });
     this._makeIcons(this.options.directory, this.options.icon);
 };
