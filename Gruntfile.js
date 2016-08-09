@@ -23,16 +23,6 @@ module.exports = function(grunt) {
                 '<%= nodeunit.tests %>'
             ]
         },
-        jshint: {
-            all: [
-                'Gruntfile.js',
-                'tasks/**/*.js',
-                '<%= nodeunit.tests %>'
-            ],
-            options: {
-                jshintrc: '.jshintrc'
-            }
-        },
         // Before generating any new files, remove any previously-created files.
         clean: {
             tests: [
@@ -53,6 +43,9 @@ module.exports = function(grunt) {
                     author: 'Aleksey Dmitriev',
                     license: 'MIT',
                     icon: 'icon.png',
+                    icon_ie: 'icon.ico',
+                    icon_unistall_ie: 'icon.ico',
+                    homepage_url: 'http://home.test.com',
                     content_scripts: {
                         js: [
                             'app.min.js'
@@ -84,5 +77,5 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['clean', 'browser_extension', 'nodeunit']);
 
     // By default, lint and run all tests.
-    grunt.registerTask('default', ['jshint', 'eslint', 'test']);
+    grunt.registerTask('default', ['eslint', 'test']);
 };

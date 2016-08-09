@@ -72,25 +72,25 @@ browserExtension.prototype.copyUserFiles = function() {
     grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
         var patterns = ['*.html', '*.js', '*.css'];
         var isTemplate = false;
-        for(var pattern in patterns){
-            if(grunt.file.isMatch(patterns[pattern], filename)){
+        for (var pattern in patterns) {
+            if (grunt.file.isMatch(patterns[pattern], filename)) {
                 isTemplate = true;
                 break;
             }
         }
-        if(subdir){
+        if (subdir) {
             filename = subdir + '/' + filename;
         }
-        if(isTemplate){
+        if (isTemplate) {
             var template = handlebars.compile(grunt.file.read(path.join(abspath)));
             var raw = template(self.options);
-            grunt.file.write('build/'+self.target+'/chrome/' + filename, raw);
-            grunt.file.write('build/'+self.target+'/firefox/data/' + filename, raw);
-            grunt.file.write('build/'+self.target+'/safari/' + filename, raw);
-        }else{
-            grunt.file.copy(abspath, 'build/'+self.target+'/chrome/' + filename);
-            grunt.file.copy(abspath, 'build/'+self.target+'/firefox/data/' + filename);
-            grunt.file.copy(abspath, 'build/'+self.target+'/safari/' + filename);
+            grunt.file.write('build/' + self.target + '/chrome/' + filename, raw);
+            grunt.file.write('build/' + self.target + '/firefox/data/' + filename, raw);
+            grunt.file.write('build/' + self.target + '/safari/' + filename, raw);
+        } else {
+            grunt.file.copy(abspath, 'build/' + self.target + '/chrome/' + filename);
+            grunt.file.copy(abspath, 'build/' + self.target + '/firefox/data/' + filename);
+            grunt.file.copy(abspath, 'build/' + self.target + '/safari/' + filename);
         }
     });
     this._makeIcons(this.options.directory, this.options.icon);
@@ -103,13 +103,13 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
             cwd: applicationDir
         }, file).forEach(function(fileName) {
             if (grunt.file.isDir(applicationDir + '/' + fileName)) {
-                grunt.file.mkdir('build/'+self.target+'/chrome/' + fileName);
-                grunt.file.mkdir('build/'+self.target+'/firefox/data/' + fileName);
-                grunt.file.mkdir('build/'+self.target+'/safari/' + fileName);
+                grunt.file.mkdir('build/' + self.target + '/chrome/' + fileName);
+                grunt.file.mkdir('build/' + self.target + '/firefox/data/' + fileName);
+                grunt.file.mkdir('build/' + self.target + '/safari/' + fileName);
             } else {
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/chrome/' + fileName);
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/firefox/data/' + fileName);
-                grunt.file.copy(applicationDir + '/' + fileName, 'build/'+self.target+'/safari/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/' + self.target + '/chrome/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/' + self.target + '/firefox/data/' + fileName);
+                grunt.file.copy(applicationDir + '/' + fileName, 'build/' + self.target + '/safari/' + fileName);
             }
         });
     });
@@ -117,15 +117,15 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
 
 browserExtension.prototype._makeIcons = function(applicationDir, icon) {
     var identifyArgs = ['identify',
-    '-format',
-    "'{ \"height\": %h, \"width\": %w}'",
-    applicationDir + '/' + icon
+        '-format',
+        "'{ \"height\": %h, \"width\": %w}'",
+        applicationDir + '/' + icon
     ].join(' ');
 
     var result = shell.exec(identifyArgs, {
         silent: true
     });
-    if(result.code !== 0){
+    if (result.code !== 0) {
         grunt.fail.fatal('Need have installed imagemagick!');
     }
     var options = JSON.parse(result.output);
@@ -166,7 +166,7 @@ browserExtension.prototype.build = function() {
 
 
     var currentDir = shell.pwd();
-    shell.cd('build/'+this.target+'/firefox/');
+    shell.cd('build/' + this.target + '/firefox/');
     var result = shell.exec('jpm xpi', {
         silent: true
     });
@@ -184,11 +184,34 @@ browserExtension.prototype.build = function() {
      * Prepare Safari extension
      */
 
-    shell.mv('build/'+this.target+'/safari', 'build/'+this.target+'/safari.safariextension');
+    shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/safari.safariextension');
     shell.rm('-rf', 'build/icons');
 
     grunt.log.ok('Extensions are in build directory');
 
+};
+
+browserExtension.prototype.buildNsisIE = function() {
+    var options = this.options;
+    var pluginRoot = this.root;
+    var target = this.target;
+    var filensis = 'Installer.nsi';
+    var rawtemplate = grunt.file.read(path.join(pluginRoot, 'lib', 'ie', filensis));
+    var template = handlebars.compile(rawtemplate);
+    var nsisScript = path.join('build', target, 'nsis', filensis);
+    grunt.file.write(nsisScript, template(options));
+    grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
+    grunt.file.copy(path.join(options.directory, options.icon_unistall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+
+    var result = shell.exec('makensis ' + nsisScript, {
+        silent: true
+    });
+    if (result.code !== 0) {
+        grunt.fail.fatal("not build nsis for ie");
+    }
+    grunt.file.copy(path.join('build', target, 'nsis', options.name + 'Setup.exe'), path.join('build', target, 'ie', 'setup.exe'));
+
+    shell.rm('-rf', 'build/nsis');
 };
 
 
