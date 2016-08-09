@@ -53,6 +53,9 @@ module.exports = function(grunt) {
                     author: 'Aleksey Dmitriev',
                     license: 'MIT',
                     icon: 'icon.png',
+                    icon_ie: 'icon.ico',
+                    icon_unistall_ie: 'icon.ico',
+                    homepage_url: 'http://home.test.com',
                     content_scripts: {
                         js: [
                             'app.min.js'
