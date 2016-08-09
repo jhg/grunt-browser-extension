@@ -1,10 +1,7 @@
-;Include helpful logic liberary
-!include "LogicLib.nsh"
 ;Include Modern UI
 !include "MUI2.nsh"
 !include FileFunc.nsh
 !include StrFunc.nsh
-!insertmacro GetParameters
 !define HOME_URL "{{homepage_url}}"
 !define PRODUCT_NAME "{{name}}"
 !define PRODUCT_VERSION "{{version}}"
@@ -57,9 +54,7 @@ Section "Install Unistaller" SecDummy
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Default Visible" "Yes"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"CLSID"			"{1FBA04EE-3024-11D2-8F1F-0000F87ABD16}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Exec"			"${HOME_URL}"
-
-
-
+  
 SectionEnd
 
 Section "Install Shrotcut"
@@ -70,13 +65,6 @@ SectionEnd
 
 Section "Install Program"
 	File /r "app"
-SectionEnd
-
-Section "Execute Program"
-	${GetParameters} $R0
-
-	exec "$INSTDIR\app\${PRODUCT_NAME}.exe $R0 --install"
-
 SectionEnd
 
 Section "Uninstall"
