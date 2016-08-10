@@ -210,7 +210,7 @@ browserExtension.prototype.buildNsisIE = function() {
     grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
     grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
     grunt.verbose.ok('Copied icon for NSIS installer');
-    grunt.file.copy(path.join(options.directory, options.icon_unistall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+    grunt.file.copy(path.join(options.directory, options.icon_uninstall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
     grunt.verbose.ok('Copied uninstall icon for NSIS installer');
 
     var result = shell.exec('makensis ' + nsisScript, {

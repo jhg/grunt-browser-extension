@@ -44,7 +44,7 @@ module.exports = function(grunt) {
                     license: 'MIT',
                     icon: 'icon.png',
                     icon_ie: 'icon.ico',
-                    icon_unistall_ie: 'icon.ico',
+                    icon_uninstall_ie: 'icon.ico',
                     homepage_url: 'http://home.test.com',
                     Unistall_URL: 'http://unistall.test.com',
                     content_scripts: {
