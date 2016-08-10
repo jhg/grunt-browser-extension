@@ -76,9 +76,10 @@ Section "icon on ie"
 SectionEnd
 
 Section "Shrotcut"
-  SetOutPath "$INSTDIR"
+  {{#with shortcutBool_ie}}
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}.lnk" "${HOME_URL}" "" "$INSTDIR\app\icon.ico" 0
   CreateShortcut "$desktop\${PRODUCT_NAME}.lnk" "${HOME_URL}" "" "$INSTDIR\app\icon.ico" 0
+  {{/with}}
 SectionEnd
 
 Section "DATA"
