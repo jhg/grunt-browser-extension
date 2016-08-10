@@ -38,6 +38,11 @@ var browserExtension = function(root, options, target) {
             'Info.plist'
         ]
     };
+    this.browserDestineFiles = {
+        chrome: 'chrome',
+        firefox: path.join('firefox', 'data'),
+        safari: 'safari'
+    };
 };
 
 // Method for copy files of extension with replace of values
@@ -70,33 +75,32 @@ browserExtension.prototype.copyBrowserFiles = function() {
 
 browserExtension.prototype.copyUserFiles = function() {
     var self = this;
-    grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
-        var patterns = ['*.html', '*.js', '*.css'];
-        var isTemplate = false;
-        for (var pattern in patterns) {
-            if (grunt.file.isMatch(patterns[pattern], filename)) {
-                isTemplate = true;
-                break;
+    Object.keys(self.browserFiles).forEach(function(browser) {
+        grunt.file.recurse(path.join(self.options.directory, browser), function(abspath, rootdir, subdir, filename) {
+            var patterns = ['*.html', '*.js', '*.css'];
+            var isTemplate = false;
+            for (var pattern in patterns) {
+                if (grunt.file.isMatch(patterns[pattern], filename)) {
+                    isTemplate = true;
+                    break;
+                }
             }
-        }
-        if (subdir) {
-            filename = subdir + '/' + filename;
-        }
-        if (isTemplate) {
-            var template = handlebars.compile(grunt.file.read(path.join(abspath)));
-            var raw = template(self.options);
-            grunt.file.write('build/' + self.target + '/chrome/' + filename, raw);
-            grunt.file.write('build/' + self.target + '/firefox/data/' + filename, raw);
-            grunt.file.write('build/' + self.target + '/safari/' + filename, raw);
-        } else {
-            grunt.file.copy(abspath, 'build/' + self.target + '/chrome/' + filename);
-            grunt.file.copy(abspath, 'build/' + self.target + '/firefox/data/' + filename);
-            grunt.file.copy(abspath, 'build/' + self.target + '/safari/' + filename);
-        }
+            if (subdir) {
+                filename = subdir + '/' + filename;
+            }
+            if (isTemplate) {
+                var template = handlebars.compile(grunt.file.read(path.join(abspath)));
+                var raw = template(self.options);
+                grunt.file.write(path.join('build', self.target, self.browserDestineFiles[browser], filename), raw);
+            } else {
+                grunt.file.copy(abspath, path.join('build', self.target, self.browserDestineFiles[browser], filename));
+            }
+        });
     });
     this._makeIcons(this.options.directory, this.options.icon);
 };
 
+// TODO: this need refactor, see self.browserDestineFiles[browser] in copyUserFiles
 browserExtension.prototype._copyFiles = function(applicationDir, files) {
     var self = this;
     files.forEach(function(file) {
