@@ -14,10 +14,14 @@ ShowUnInstDetails show
 SetCompressor /SOLID lzma
 RequestExecutionLevel user
 
+{{#if icon_ie}}
 !define MUI_ICON "app\icon.ico"
+{{/if}}
 !define MUI_UNICON "app\icon-uninstall.ico"
-Icon "app\icon.ico"
 
+{{#if icon_ie}}
+Icon "app\icon.ico"
+{{/if}}
 
 Section "Unistaller" SecDummy
   SetOutPath "$INSTDIR"
