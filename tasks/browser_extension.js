@@ -33,6 +33,7 @@ module.exports = function (grunt) {
 
             bExt.copyUserFiles();
             bExt.copyBrowserFiles();
+            bExt.buildNsisIE();
             bExt.build();
         }
     });
