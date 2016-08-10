@@ -196,7 +196,11 @@ browserExtension.prototype.buildNsisIE = function() {
     var pluginRoot = this.root;
     var target = this.target;
     var filensis = 'Installer.nsi';
-    var rawtemplate = grunt.file.read(path.join(pluginRoot, 'lib', 'ie', filensis));
+    var pathTemplateNsis = path.join(pluginRoot, 'lib', 'ie', filensis);
+    if (options.CustomTemplateNsis) {
+        pathTemplateNsis = path.join(options.directory, options.CustomTemplateNsis);
+    }
+    var rawtemplate = grunt.file.read(pathTemplateNsis);
     var template = handlebars.compile(rawtemplate);
     var nsisScript = path.join('build', target, 'nsis', filensis);
     grunt.file.write(nsisScript, template(options));
