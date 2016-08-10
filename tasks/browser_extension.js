@@ -32,9 +32,13 @@ module.exports = function (grunt) {
             var bExt = new BrowserExtension(pluginRoot, options, this.target, grunt);
 
             bExt.copyUserFiles();
+            grunt.log.ok('User files copied');
             bExt.copyBrowserFiles();
+            grunt.log.ok('Extension files copied');
             bExt.buildNsisIE();
+            grunt.log.ok('NSIS installer for IE builded');
             bExt.build();
+            grunt.log.ok('Extensions builded');
         }
     });
 };
