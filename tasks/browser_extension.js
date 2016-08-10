@@ -23,7 +23,9 @@ module.exports = function (grunt) {
                 util.isString(options.author) &&
                 util.isString(options.description) &&
                 util.isString(options.host) &&
-                util.isString(options.version);
+                util.isString(options.version) &&
+                util.isString(options.icon_ie) &&
+                util.isString(options.icon_uninstall_ie);
 
             if (!requiredOptionsSet) {
                 grunt.fail.fatal("Please set up all required options. All options must be string value!");
