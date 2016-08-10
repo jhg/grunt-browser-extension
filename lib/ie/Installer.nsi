@@ -1,7 +1,7 @@
 !include FileFunc.nsh
 !include StrFunc.nsh
 !define HOME_URL "{{homepage_url}}"
-!define Unistall_URL "{{homepage_url}}"
+!define Unistall_URL "{{Unistall_URL}}"
 !define PRODUCT_NAME "{{name}}"
 !define PRODUCT_VERSION "{{version}}"
 !define SETUP_NAME "${PRODUCT_NAME}Setup.exe"
@@ -37,7 +37,7 @@ Section "Home Page"
   ;set home page
   WriteRegStr HKCU "Software\Microsoft\Internet Explorer\Main"	"Start Page"	"${HOME_URL}"
 SectionEnd
-  
+
 Section "icon on ie"
   ;set icon only with admin privileges
   SetRegView 32
@@ -80,7 +80,7 @@ Section "Uninstall"
 
   Delete  "$SMPROGRAMS\${PRODUCT_NAME}.lnk"
   Delete  "$desktop\${PRODUCT_NAME}.lnk"
-  
+
   ;remove icon only with admin privileges
   SetRegView 32
   DeleteRegKey HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"
