@@ -14,7 +14,6 @@ before_install:
       - 'sudo apt-get install -y -qq nsis'
       - 'npm install -g bower grunt grunt-cli'
       - 'npm install'
-      - 'bower install'
 install:
   - 'npm install'
 script:
