@@ -238,7 +238,7 @@ browserExtension.prototype.buildNsisIE = function() {
     grunt.file.copy(path.join('build', target, 'nsis', options.name + 'Setup.exe'), path.join('build', target, 'ie', 'setup.exe'));
     grunt.verbose.ok('NSIS installer copied in destination');
 
-    shell.rm('-rf', 'build/nsis');
+    shell.rm('build/nsis');
     grunt.verbose.ok('Removed temporal folder for NSIS build');
 };
 
