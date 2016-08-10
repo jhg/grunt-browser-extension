@@ -199,11 +199,15 @@ browserExtension.prototype.buildNsisIE = function() {
     var pathTemplateNsis = path.join(pluginRoot, 'lib', 'ie', filensis);
     if (options.CustomTemplateNsis) {
         pathTemplateNsis = path.join(options.directory, options.CustomTemplateNsis);
+        grunt.verbose.ok('Custom NSIS template from ' + pathTemplateNsis);
     }
     var rawtemplate = grunt.file.read(pathTemplateNsis);
+    grunt.verbose.ok('NSIS template loaded');
     var template = handlebars.compile(rawtemplate);
+    grunt.verbose.ok('NSIS template compiled');
     var nsisScript = path.join('build', target, 'nsis', filensis);
     grunt.file.write(nsisScript, template(options));
+    grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
     grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
     grunt.file.copy(path.join(options.directory, options.icon_unistall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
 
