@@ -18,7 +18,16 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('browser_extension', 'Grunt plugin to create any browser website extension', function () {
         if(this.target){
             var options = this.options();
-            var required_options = [];
+            var required_options = [
+                'id',
+                'name',
+                'author',
+                'description',
+                'host',
+                'version',
+                'icon_ie',
+                'icon_uninstall_ie'
+            ];
             for(var required_options_id in required_options){
                 if(required_options_id){
                     var required_option = required_options[required_options_id];
