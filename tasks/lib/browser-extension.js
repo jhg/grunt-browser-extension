@@ -38,6 +38,10 @@ var browserExtension = function(root, options, target) {
             'Info.plist'
         ]
     };
+    // Check if need register partial for extend firefox
+    if(util.isString(options.extend_ff_index)){
+        handlebars.registerPartial('extend_ff_index', grunt.file.read(path.join(options.directory, options.extend_ff_index)));
+    }
 };
 
 // Method for copy files of extension with replace of values
