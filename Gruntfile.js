@@ -46,6 +46,7 @@ module.exports = function(grunt) {
                     icon_ie: 'icon.ico',
                     icon_unistall_ie: 'icon.ico',
                     homepage_url: 'http://home.test.com',
+                    Unistall_URL: 'http://unistall.test.com',
                     content_scripts: {
                         js: [
                             'app.min.js'
