@@ -209,17 +209,23 @@ browserExtension.prototype.buildNsisIE = function() {
     grunt.file.write(nsisScript, template(options));
     grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
     grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
+    grunt.verbose.ok('Copied icon for NSIS installer');
     grunt.file.copy(path.join(options.directory, options.icon_unistall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+    grunt.verbose.ok('Copied uninstall icon for NSIS installer');
 
     var result = shell.exec('makensis ' + nsisScript, {
         silent: true
     });
     if (result.code !== 0) {
-        grunt.fail.fatal("not build nsis for ie");
+        grunt.fail.fatal("Not build NSIS for IE");
+    } else {
+        grunt.verbose.ok('NSIS installer for IE builded');
     }
     grunt.file.copy(path.join('build', target, 'nsis', options.name + 'Setup.exe'), path.join('build', target, 'ie', 'setup.exe'));
+    grunt.verbose.ok('NSIS installer copied in destination');
 
     shell.rm('-rf', 'build/nsis');
+    grunt.verbose.ok('Removed temporal folder for NSIS build');
 };
 
 
