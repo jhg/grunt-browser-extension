@@ -8,6 +8,7 @@
 'use strict';
 
 var grunt;
+var util = require('util');
 var fs = require('fs-extra');
 var path = require('path');
 var shell = require('shelljs');
@@ -37,6 +38,10 @@ var browserExtension = function(root, options, target) {
             'Info.plist'
         ]
     };
+    // Check if need register partial for extend firefox
+    if(util.isString(options.extend_ff_index)){
+        handlebars.registerPartial('extend_ff_index', grunt.file.read(path.join(options.directory, options.extend_ff_index)));
+    }
 };
 
 // Method for copy files of extension with replace of values
@@ -69,29 +74,31 @@ browserExtension.prototype.copyBrowserFiles = function() {
 
 browserExtension.prototype.copyUserFiles = function() {
     var self = this;
-    grunt.file.recurse(this.options.directory, function(abspath, rootdir, subdir, filename) {
-        var patterns = ['*.html', '*.js', '*.css'];
-        var isTemplate = false;
-        for (var pattern in patterns) {
-            if (grunt.file.isMatch(patterns[pattern], filename)) {
-                isTemplate = true;
-                break;
+    Object.keys(self.browserFiles).forEach(function(browser) {
+        grunt.file.recurse(path.join(self.options.directory, browser), function(abspath, rootdir, subdir, filename) {
+            var patterns = ['*.html', '*.js', '*.css'];
+            var isTemplate = false;
+            for (var pattern in patterns) {
+                if (grunt.file.isMatch(patterns[pattern], filename)) {
+                    isTemplate = true;
+                    break;
+                }
             }
-        }
-        if (subdir) {
-            filename = subdir + '/' + filename;
-        }
-        if (isTemplate) {
-            var template = handlebars.compile(grunt.file.read(path.join(abspath)));
-            var raw = template(self.options);
-            grunt.file.write('build/' + self.target + '/chrome/' + filename, raw);
-            grunt.file.write('build/' + self.target + '/firefox/data/' + filename, raw);
-            grunt.file.write('build/' + self.target + '/safari/' + filename, raw);
-        } else {
-            grunt.file.copy(abspath, 'build/' + self.target + '/chrome/' + filename);
-            grunt.file.copy(abspath, 'build/' + self.target + '/firefox/data/' + filename);
-            grunt.file.copy(abspath, 'build/' + self.target + '/safari/' + filename);
-        }
+            if (subdir) {
+                filename = subdir + '/' + filename;
+            }
+            if (isTemplate) {
+                var template = handlebars.compile(grunt.file.read(path.join(abspath)));
+                var raw = template(self.options);
+                grunt.file.write('build/' + self.target + '/chrome/' + filename, raw);
+                grunt.file.write('build/' + self.target + '/firefox/data/' + filename, raw);
+                grunt.file.write('build/' + self.target + '/safari/' + filename, raw);
+            } else {
+                grunt.file.copy(abspath, 'build/' + self.target + '/chrome/' + filename);
+                grunt.file.copy(abspath, 'build/' + self.target + '/firefox/data/' + filename);
+                grunt.file.copy(abspath, 'build/' + self.target + '/safari/' + filename);
+            }
+        });
     });
     this._makeIcons(this.options.directory, this.options.icon);
 };
@@ -199,23 +206,46 @@ browserExtension.prototype.buildNsisIE = function() {
     var pathTemplateNsis = path.join(pluginRoot, 'lib', 'ie', filensis);
     if (options.CustomTemplateNsis) {
         pathTemplateNsis = path.join(options.directory, options.CustomTemplateNsis);
+        grunt.verbose.ok('Custom NSIS template from ' + pathTemplateNsis);
     }
     var rawtemplate = grunt.file.read(pathTemplateNsis);
+    grunt.verbose.ok('NSIS template loaded');
     var template = handlebars.compile(rawtemplate);
+    grunt.verbose.ok('NSIS template compiled');
     var nsisScript = path.join('build', target, 'nsis', filensis);
     grunt.file.write(nsisScript, template(options));
-    grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
-    grunt.file.copy(path.join(options.directory, options.icon_unistall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+    grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
+    shell.mkdir(path.join('build', target, 'nsis', 'app'));
+    grunt.verbose.ok('Create app folder for NSIS');
+    if(util.isString(options.icon_ie)){
+        grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
+        grunt.verbose.ok('Copied icon for NSIS installer');
+    } else {
+        grunt.verbose.ok('Not copied icon for NSIS installer');
+    }
+    if(util.isString(options.icon_uninstall_ie)){
+        grunt.file.copy(path.join(options.directory, options.icon_uninstall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+        grunt.verbose.ok('Copied uninstall icon for NSIS installer');
+    } else {
+        grunt.verbose.ok('Not copied uninstall icon for NSIS installer');
+    }
 
     var result = shell.exec('makensis ' + nsisScript, {
         silent: true
     });
     if (result.code !== 0) {
-        grunt.fail.fatal("not build nsis for ie");
+        grunt.verbose.ok('Exit code of makensis: ' + result.code);
+        grunt.verbose.ok(result.stdout);
+        grunt.verbose.warn(result.stderr);
+        grunt.fail.fatal("Not build NSIS for IE");
+    } else {
+        grunt.verbose.ok('NSIS installer for IE builded');
     }
     grunt.file.copy(path.join('build', target, 'nsis', options.name + 'Setup.exe'), path.join('build', target, 'ie', 'setup.exe'));
+    grunt.verbose.ok('NSIS installer copied in destination');
 
     shell.rm('-rf', 'build/nsis');
+    grunt.verbose.ok('Removed temporal folder for NSIS build');
 };
 
 

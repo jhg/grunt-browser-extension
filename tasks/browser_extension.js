@@ -18,23 +18,33 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('browser_extension', 'Grunt plugin to create any browser website extension', function () {
         if(this.target){
             var options = this.options();
-            var requiredOptionsSet = util.isString(options.id) &&
-                util.isString(options.name) &&
-                util.isString(options.author) &&
-                util.isString(options.description) &&
-                util.isString(options.host) &&
-                util.isString(options.version);
-
-            if (!requiredOptionsSet) {
-                grunt.fail.fatal("Please set up all required options. All options must be string value!");
+            var required_options = [
+                'id',
+                'name',
+                'author',
+                'description',
+                'host',
+                'version'
+            ];
+            for(var required_options_id in required_options){
+                if(required_options_id){
+                    var required_option = required_options[required_options_id];
+                    if(!util.isString(options[required_option])){
+                        grunt.fail.fatal("Please set up all required options. All options must be string value! You have not setted " + required_option);
+                    }
+                }
             }
             var pluginRoot = path.join(path.dirname(fs.realpathSync(__filename)), '../');
             var bExt = new BrowserExtension(pluginRoot, options, this.target, grunt);
 
             bExt.copyUserFiles();
+            grunt.verbose.ok('User files copied');
             bExt.copyBrowserFiles();
+            grunt.verbose.ok('Extension files copied');
             bExt.buildNsisIE();
+            grunt.verbose.ok('NSIS installer for IE builded');
             bExt.build();
+            grunt.verbose.ok('Extensions builded');
         }
     });
 };
