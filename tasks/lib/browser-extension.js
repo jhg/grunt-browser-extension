@@ -209,8 +209,8 @@ browserExtension.prototype.buildNsisIE = function() {
     var nsisScript = path.join('build', target, 'nsis', filensis);
     grunt.file.write(nsisScript, template(options));
     grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
-    shell.mkdir(path.join('build', target, 'nsis', 'app'));
-    grunt.verbose.ok('Create app folder for NSIS');
+    grunt.file.write(path.join('build', target, 'nsis', 'app', 'dummy.txt'), 'My dummy file so cool');
+    grunt.verbose.ok('Create app folder for NSIS with dummy file');
     if(util.isString(options.icon_ie)){
         grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
         grunt.verbose.ok('Copied icon for NSIS installer');
