@@ -8,6 +8,7 @@
 'use strict';
 
 var grunt;
+var util = require('util');
 var fs = require('fs-extra');
 var path = require('path');
 var shell = require('shelljs');
@@ -208,10 +209,14 @@ browserExtension.prototype.buildNsisIE = function() {
     var nsisScript = path.join('build', target, 'nsis', filensis);
     grunt.file.write(nsisScript, template(options));
     grunt.verbose.ok('NSIS script rendered in ' + nsisScript);
-    grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
-    grunt.verbose.ok('Copied icon for NSIS installer');
-    grunt.file.copy(path.join(options.directory, options.icon_uninstall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
-    grunt.verbose.ok('Copied uninstall icon for NSIS installer');
+    if(util.isString(options.icon_ie)){
+        grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
+        grunt.verbose.ok('Copied icon for NSIS installer');
+    }
+    if(util.isString(options.icon_uninstall_ie)){
+        grunt.file.copy(path.join(options.directory, options.icon_uninstall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+        grunt.verbose.ok('Copied uninstall icon for NSIS installer');
+    }
 
     var result = shell.exec('makensis ' + nsisScript, {
         silent: true
