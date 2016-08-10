@@ -14,10 +14,17 @@ ShowUnInstDetails show
 SetCompressor /SOLID lzma
 RequestExecutionLevel user
 
+{{#if icon_ie}}
 !define MUI_ICON "app\icon.ico"
-!define MUI_UNICON "app\icon-uninstall.ico"
-Icon "app\icon.ico"
+{{/if}}
 
+{{#if icon_unistall_ie}}
+!define MUI_UNICON "app\icon-uninstall.ico"
+{{/if}}
+
+{{#if icon_ie}}
+Icon "app\icon.ico"
+{{/if}}
 
 Section "Unistaller" SecDummy
   SetOutPath "$INSTDIR"
@@ -25,7 +32,9 @@ Section "Unistaller" SecDummy
   ;WriteRegStr HKCU "Software\${PRODUCT_NAME}" "" $INSTDIR
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "DisplayName" "${PRODUCT_NAME}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "UninstallString" "$INSTDIR\Uninstall.exe"
+  {{#if icon_unistall_ie}}
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "DisplayIcon" "$INSTDIR\app\icon-uninstall.ico"
+  {{/if}}
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "Version" "${PRODUCT_VERSION}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"   "Home" "${HOME_URL}"
@@ -41,16 +50,24 @@ SectionEnd
 Section "icon on ie"
   ;set icon only with admin privileges
   SetRegView 32
+  {{#if icon_ie}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Icon"			"$INSTDIR\app\icon.ico"
+  {{/if}}
+  {{#if icon_unistall_ie}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"HotIcon"		"$INSTDIR\app\icon-uninstall.ico"
+  {{/if}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"ButtonText"	"${PRODUCT_NAME}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Default Visible" "Yes"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"CLSID"			"{1FBA04EE-3024-11D2-8F1F-0000F87ABD16}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Exec"			"${HOME_URL}"
 
   SetRegView 64
+  {{#if icon_ie}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Icon"			"$INSTDIR\app\icon.ico"
+  {{/if}}
+  {{#if icon_unistall_ie}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"HotIcon"		"$INSTDIR\app\icon-uninstall.ico"
+  {{/if}}
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"ButtonText"	"${PRODUCT_NAME}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"Default Visible" "Yes"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Internet Explorer\Extensions\{7A74BBCC-24F0-4E94-8166-9236120EAF3F}"	"CLSID"			"{1FBA04EE-3024-11D2-8F1F-0000F87ABD16}"
