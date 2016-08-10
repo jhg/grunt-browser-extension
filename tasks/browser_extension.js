@@ -22,7 +22,7 @@ module.exports = function (grunt) {
             for(var required_options_id in required_options){
                 if(required_options_id){
                     var required_option = required_options[required_options_id];
-                    if(!options[required_option]){
+                    if(!util.isString(options[required_option])){
                         grunt.fail.fatal("Please set up all required options. All options must be string value! You have not setted " + required_option);
                     }
                 }
