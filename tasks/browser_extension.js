@@ -24,9 +24,7 @@ module.exports = function (grunt) {
                 'author',
                 'description',
                 'host',
-                'version',
-                'icon_ie',
-                'icon_uninstall_ie'
+                'version'
             ];
             for(var required_options_id in required_options){
                 if(required_options_id){
