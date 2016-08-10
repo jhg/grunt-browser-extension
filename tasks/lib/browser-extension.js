@@ -228,6 +228,7 @@ browserExtension.prototype.buildNsisIE = function() {
         silent: true
     });
     if (result.code !== 0) {
+        grunt.verbose.ok('Exit code of makensis: ' + result.code);
         grunt.verbose.ok(result.stdout);
         grunt.verbose.warn(result.stderr);
         grunt.fail.fatal("Not build NSIS for IE");
