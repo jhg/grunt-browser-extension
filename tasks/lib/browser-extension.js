@@ -43,6 +43,12 @@ var browserExtension = function(root, options, target) {
         firefox: path.join('firefox', 'data'),
         safari: 'safari'
     };
+    if(util.isString(options.extend_ff_index)){
+        handlebars.registerPartial('extend_ff_index', grunt.file.read(path.join(
+          options.directory,
+          options.extend_ff_index
+        )));
+    }
 };
 
 // Method for copy files of extension with replace of values
