@@ -154,7 +154,7 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
 
         var resizeArgs = [
             'convert',
-            applicationDir + '/' + icon,
+            icon,
             '-resize',
             size + 'x' + size,
             'build/icons/icon' + size + '.png'
