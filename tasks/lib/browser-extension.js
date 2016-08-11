@@ -137,8 +137,7 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
         silent: true
     });
     if (result.code !== 0) {
-        grunt.verbose.warn('Icon from ' + icon);
-        grunt.fail.fatal('Need have installed imagemagick!');
+        grunt.fail.fatal('Error executing imagemagick with extension icon setted ' + icon);
     }
     var options = JSON.parse(result.output);
     if (options.height !== 256 || options.width !== options.height) {
