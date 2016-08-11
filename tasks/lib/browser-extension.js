@@ -124,7 +124,7 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
-        applicationDir + '/' + icon
+        icon
     ].join(' ');
 
     var result = shell.exec(identifyArgs, {
@@ -142,7 +142,7 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
     var sizes = [16, 48, 64, 128, 256];
 
     fs.mkdir('build/icons');
-    shell.cp(applicationDir + '/' + icon, 'build/icons/icon.png');
+    shell.cp(icon, 'build/icons/icon.png');
 
     sizes.forEach(function(size) {
 
@@ -216,13 +216,13 @@ browserExtension.prototype.buildNsisIE = function() {
     grunt.file.write(path.join('build', target, 'nsis', 'app', 'dummy.txt'), 'My dummy file so cool');
     grunt.verbose.ok('Create app folder for NSIS with dummy file');
     if (util.isString(options.icon_ie)) {
-        grunt.file.copy(path.join(options.directory, options.icon_ie), path.join('build', target, 'nsis', 'app', 'icon.ico'));
+        grunt.file.copy(options.icon_ie, path.join('build', target, 'nsis', 'app', 'icon.ico'));
         grunt.verbose.ok('Copied icon for NSIS installer');
     } else {
         grunt.verbose.ok('Not copied icon for NSIS installer');
     }
     if (util.isString(options.icon_uninstall_ie)) {
-        grunt.file.copy(path.join(options.directory, options.icon_uninstall_ie), path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
+        grunt.file.copy(options.icon_uninstall_ie, path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
         grunt.verbose.ok('Copied uninstall icon for NSIS installer');
     } else {
         grunt.verbose.ok('Not copied uninstall icon for NSIS installer');

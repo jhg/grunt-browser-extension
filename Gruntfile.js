@@ -42,10 +42,10 @@ module.exports = function(grunt) {
                     description: 'browser extension test',
                     author: 'Aleksey Dmitriev',
                     license: 'MIT',
-                    icon: 'icon.png',
-                    icon_ie: 'icon.ico',
+                    icon: 'test/fixtures/application/icon.png',
+                    icon_ie: 'test/fixtures/application/icon.ico',
+                    icon_uninstall_ie: 'test/fixtures/application/icon.ico',
                     shortcutBool_ie: true,
-                    icon_uninstall_ie: 'icon.ico',
                     homepage_url: 'http://home.test.com',
                     Unistall_URL: 'http://unistall.test.com',
                     content_scripts: {
