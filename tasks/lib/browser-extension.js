@@ -227,12 +227,14 @@ browserExtension.prototype.buildNsisIE = function() {
         grunt.verbose.ok('Copied icon for NSIS installer');
     } else {
         grunt.verbose.warn('Not copied icon for NSIS installer');
+        grunt.verbose.warn(options.icon_ie);
     }
     if (grunt.file.isFile(options.icon_uninstall_ie)) {
         grunt.file.copy(options.icon_uninstall_ie, path.join('build', target, 'nsis', 'app', 'icon-unistall.ico'));
         grunt.verbose.ok('Copied uninstall icon for NSIS installer');
     } else {
         grunt.verbose.warn('Not copied uninstall icon for NSIS installer');
+        grunt.verbose.warn(options.icon_uninstall_ie);
     }
 
     var result = shell.exec('makensis ' + nsisScript, {
