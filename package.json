@@ -1,49 +1,52 @@
 {
-    "name": "grunt-browser-extension",
-    "description": "Grunt plugin to create any browser website extension",
-    "version": "0.7.3",
-    "homepage": "https://github.com/addmitriev/grunt-browser-extension",
-    "author": {
-        "name": "Aleksey Dmitriev",
-        "email": "alexey@ioncloud.ru"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/addmitriev/grunt-browser-extension.git"
-    },
-    "bugs": {
-        "url": "https://github.com/addmitriev/grunt-browser-extension/issues"
-    },
-    "licenses": [{
-        "type": "MIT",
-        "url": "https://github.com/addmitriev/grunt-browser-extension/blob/master/LICENSE-MIT"
-    }],
-    "engines": {
-        "node": ">= 0.8.0"
-    },
-    "scripts": {
-        "test": "grunt test"
-    },
-    "dependencies": {
-        "fs-extra": "^0.26.2",
-        "handlebars": "^4.0.5",
-        "jpm": "^1.1.3",
-        "shelljs": "^0.5.3",
-        "util": "^0.10.3"
-    },
-    "devDependencies": {
-        "eslint": "^3.2.2",
-        "eslint-plugin-json": "^1.2.0",
-        "grunt": "~0.4.5",
-        "grunt-contrib-clean": "^0.5.0",
-        "grunt-contrib-copy": "^0.8.2",
-        "grunt-contrib-nodeunit": "^0.3.3",
-        "grunt-eslint": "^19.0.0"
-    },
-    "peerDependencies": {
-        "grunt": ">=0.4.0"
-    },
-    "keywords": [
-        "gruntplugin"
-    ]
+  "name": "grunt-browser-extension",
+  "description": "Grunt plugin to create any browser website extension",
+  "version": "0.7.3",
+  "homepage": "https://github.com/addmitriev/grunt-browser-extension",
+  "author": {
+    "name": "Aleksey Dmitriev",
+    "email": "alexey@ioncloud.ru"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/addmitriev/grunt-browser-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/addmitriev/grunt-browser-extension/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/addmitriev/grunt-browser-extension/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "fs-extra": "^0.26.2",
+    "handlebars": "^4.0.5",
+    "jpm": "^1.1.3",
+    "shelljs": "^0.5.3",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.2.2",
+    "eslint-plugin-json": "^1.2.0",
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt-eslint": "^19.0.0",
+    "time-grunt": "^1.4.0"
+  },
+  "peerDependencies": {
+    "grunt": ">=0.4.0"
+  },
+  "keywords": [
+    "gruntplugin"
+  ]
 }
