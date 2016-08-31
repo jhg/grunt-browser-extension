@@ -21,6 +21,18 @@ handlebars.registerHelper('json', function(value) {
 });
 
 
+// Opera not allow all chrome options and fail, then need delete it
+function opera_pre_processor(opt){
+    if(opt.permissions && opt.permissions.indexOf('background') > -1){
+        opt.permissions.splice(opt.permissions.indexOf('background'), 1);
+    }
+    if(opt.chrome_url_overrides){
+        opt.chrome_url_overrides = undefined;
+    }
+    return opt;
+}
+
+
 // Prototype for build extensions for each browser
 var browserExtension = function(root, options, target) {
     this.root = root;
@@ -47,6 +59,9 @@ var browserExtension = function(root, options, target) {
         firefox: path.join('firefox', 'data'),
         safari: 'safari'
     };
+    this.browserProcessors = {
+        opera: opera_pre_processor
+    };
     if(util.isString(options.extend_ff_index)){
         handlebars.registerPartial('extend_ff_index', grunt.file.read(path.join(
           options.directory,
@@ -60,10 +75,12 @@ browserExtension.prototype.copyBrowserFiles = function() {
     var options = this.options;
     var pluginRoot = this.root;
     var browserFiles = this.browserFiles;
+    var browserProcessors = this.browserProcessors;
     var target = this.target;
     // Process each file from skeletons
     Object.keys(browserFiles).forEach(function(browser) {
         browserFiles[browser].forEach(function(filename) {
+            var pre_processor = function(opt){return opt;};
             // Compile template from content of file
             var template = handlebars.compile(grunt.file.read(path.join(
                 pluginRoot,
@@ -71,13 +88,18 @@ browserExtension.prototype.copyBrowserFiles = function() {
                 browser,
                 filename
             )));
+            if(Object.keys(browserProcessors).indexOf(browser) > -1){
+                pre_processor = browserProcessors[browser];
+            }
+            var context = pre_processor(JSON.parse(JSON.stringify(options)));
+            context.browser = browser;
             // Render template with a context and write to file
             grunt.file.write(path.join(
                 'build',
                 target,
                 browser,
                 filename
-            ), template(options));
+            ), template(context));
         });
     });
 };
@@ -102,7 +124,9 @@ browserExtension.prototype.copyUserFiles = function() {
             grunt.verbose.ok('User file destination path: ' + dstpath);
             if (isTemplate) {
                 var template = handlebars.compile(grunt.file.read(abspath));
-                var raw = template(self.options);
+                var context = JSON.parse(JSON.stringify(self.options));
+                context.browser = browser;
+                var raw = template(context);
                 grunt.file.write(dstpath, raw);
             } else {
                 grunt.file.copy(abspath, dstpath);
