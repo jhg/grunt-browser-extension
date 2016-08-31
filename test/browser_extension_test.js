@@ -13,6 +13,7 @@ exports.browser_extension = {
         test.ok(grunt.file.isDir('build/default/firefox'));
         test.ok(grunt.file.isFile('build/default/firefox/com.browser.extension.xpi'));
         test.ok(grunt.file.isDir('build/default/safari.safariextension'));
+        test.ok(grunt.file.isDir('build/default/opera'));
         test.ok(grunt.file.isFile('build/default/ie/setup.exe'));
         test.done();
     }
