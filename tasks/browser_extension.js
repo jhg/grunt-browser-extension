@@ -35,15 +35,19 @@ module.exports = function (grunt) {
                 }
             }
             var pluginRoot = path.join(path.dirname(fs.realpathSync(__filename)), '../');
-            var bExt = new BrowserExtension(pluginRoot, options, this.target, grunt);
+            var browserExt = new BrowserExtension(pluginRoot, options, this.target, grunt);
+            grunt.verbose.ok('Start build extension steps');
 
-            bExt.copyUserFiles();
+            browserExt.copyUserFiles();
             grunt.verbose.ok('User files copied');
-            bExt.copyBrowserFiles();
+
+            browserExt.copyBrowserFiles();
             grunt.verbose.ok('Extension files copied');
-            bExt.buildNsisIE();
+
+            browserExt.buildNsisIE();
             grunt.verbose.ok('NSIS installer for IE builded');
-            bExt.build();
+
+            browserExt.build();
             grunt.verbose.ok('Extensions builded');
         }
     });
