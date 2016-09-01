@@ -98,7 +98,9 @@ browserExtension.prototype.copyBrowserFiles = function() {
                 pre_processor = browserProcessors[browser];
             }
             var context = pre_processor(JSON.parse(JSON.stringify(options)));
-            context.browser = {};
+            context.browser = {
+                name: browser
+            };
             context.browser[browser] = true;
             // Render template with a context and write to file
             grunt.file.write(path.join(
@@ -132,7 +134,9 @@ browserExtension.prototype.copyUserFiles = function() {
             if (isTemplate) {
                 var template = handlebars.compile(grunt.file.read(abspath));
                 var context = JSON.parse(JSON.stringify(self.options));
-                context.browser = {};
+                context.browser = {
+                    name: browser
+                };
                 context.browser[browser] = true;
                 var raw = template(context);
                 grunt.file.write(dstpath, raw);
