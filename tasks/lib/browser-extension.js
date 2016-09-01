@@ -62,6 +62,12 @@ var browserExtension = function(root, options, target) {
     this.browserProcessors = {
         opera: opera_pre_processor
     };
+    var self = this;
+    Object.keys(self.browserFiles).forEach(function(browser) {
+        if(!grunt.file.exists(path.join(options.directory, browser))){
+            delete self.browserFiles[browser];
+        }
+    });
     if(util.isString(options.extend_ff_index)){
         handlebars.registerPartial('extend_ff_index', grunt.file.read(path.join(
           options.directory,
