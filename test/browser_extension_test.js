@@ -24,9 +24,10 @@ exports.browser_extension = {
         test.done();
     },
     test_files_builded: function(test) {
-        test.expect(2);
+        test.expect(3);
         test.ok(grunt.file.isFile('build/default/firefox/com.browser.extension.xpi'));
         test.ok(grunt.file.isFile('build/default/ie/setup.exe'));
+        test.ok(grunt.file.isFile('build/default/safari.safariextension/Info.plist'));
         test.done();
     },
     test_icons_builded: function(test) {
