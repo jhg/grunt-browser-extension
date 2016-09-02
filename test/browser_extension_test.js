@@ -15,7 +15,6 @@ exports.browser_extension = {
         done();
     },
     test_directories_builded: function(test) {
-        // Check directories of each browser extension
         test.expect(5);
         test.ok(grunt.file.isDir('build/default/chrome'));
         test.ok(grunt.file.isDir('build/default/firefox'));
@@ -25,14 +24,12 @@ exports.browser_extension = {
         test.done();
     },
     test_files_builded: function(test) {
-        // Check special files of each browser extension
         test.expect(2);
         test.ok(grunt.file.isFile('build/default/firefox/com.browser.extension.xpi'));
         test.ok(grunt.file.isFile('build/default/ie/setup.exe'));
         test.done();
     },
     test_icons_builded: function(test) {
-        // Check images of each browser extension
         test.expect(4);
         test.equal(check_image('build/default/chrome/icon.png'), 0);
         test.equal(check_image('build/default/firefox/data/icon.png'), 0);
