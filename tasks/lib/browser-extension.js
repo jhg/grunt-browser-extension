@@ -145,7 +145,7 @@ browserExtension.prototype.copyUserFiles = function() {
             }
         });
     });
-    this._makeIcons(this.options.directory, this.options.icon);
+    this._makeIcons(this.options.icon);
 };
 
 // TODO: this need refactor, see self.browserDestineFiles[browser] in copyUserFiles
@@ -161,17 +161,18 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
                 grunt.file.mkdir('build/' + self.target + '/firefox/data/' + fileName);
                 grunt.file.mkdir('build/' + self.target + '/safari/' + fileName);
             } else {
-                var tmp_file_content = grunt.file.read(applicationDir + '/' + fileName);
-                grunt.file.write('build/' + self.target + '/chrome/' + fileName, tmp_file_content);
-                grunt.file.write('build/' + self.target + '/opera/' + fileName, tmp_file_content);
-                grunt.file.write('build/' + self.target + '/firefox/data/' + fileName, tmp_file_content);
-                grunt.file.write('build/' + self.target + '/safari/' + fileName, tmp_file_content);
+                var options_file = {encoding: null};
+                var tmp_file_content = grunt.file.read(applicationDir + '/' + fileName, options_file);
+                grunt.file.write('build/' + self.target + '/chrome/' + fileName, tmp_file_content, options_file);
+                grunt.file.write('build/' + self.target + '/opera/' + fileName, tmp_file_content, options_file);
+                grunt.file.write('build/' + self.target + '/firefox/data/' + fileName, tmp_file_content, options_file);
+                grunt.file.write('build/' + self.target + '/safari/' + fileName, tmp_file_content, options_file);
             }
         });
     });
 };
 
-browserExtension.prototype._makeIcons = function(applicationDir, icon) {
+browserExtension.prototype._makeIcons = function(icon) {
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
@@ -205,6 +206,7 @@ browserExtension.prototype._makeIcons = function(applicationDir, icon) {
         });
     });
     this._copyFiles('build/icons', ['*.png']);
+    shell.rm('-rf', 'build/icons');
 };
 
 browserExtension.prototype.build = function() {
@@ -225,7 +227,6 @@ browserExtension.prototype.build = function() {
     shell.cd(currentDir);
     // Prepare Safari extension
     shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/safari.safariextension');
-    shell.rm('-rf', 'build/icons');
     grunt.log.ok('Extensions are in build directory');
 };
 
