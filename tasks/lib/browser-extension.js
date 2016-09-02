@@ -145,7 +145,7 @@ browserExtension.prototype.copyUserFiles = function() {
             }
         });
     });
-    this._makeIcons(this.options.directory, this.options.icon);
+    this._makeIcons(this.options.icon);
 };
 
 // TODO: this need refactor, see self.browserDestineFiles[browser] in copyUserFiles
@@ -171,7 +171,7 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
     });
 };
 
-browserExtension.prototype._makeIcons = function(applicationDir, icon) {
+browserExtension.prototype._makeIcons = function(icon) {
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
