@@ -206,6 +206,7 @@ browserExtension.prototype._makeIcons = function(icon) {
         });
     });
     this._copyFiles('build/icons', ['*.png']);
+    shell.rm('-rf', 'build/icons');
 };
 
 browserExtension.prototype.build = function() {
@@ -226,7 +227,6 @@ browserExtension.prototype.build = function() {
     shell.cd(currentDir);
     // Prepare Safari extension
     shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/safari.safariextension');
-    shell.rm('-rf', 'build/icons');
     grunt.log.ok('Extensions are in build directory');
 };
 
