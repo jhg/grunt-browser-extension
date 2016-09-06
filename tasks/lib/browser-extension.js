@@ -50,7 +50,9 @@ var browserExtension = function(root, options, target) {
             'lib/index.js'
         ],
         safari: [
-            'Info.plist'
+            'Info.plist',
+            'Settings.plist',
+            'background.html'
         ]
     };
     this.browserDestineFiles = {
