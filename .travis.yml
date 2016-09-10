@@ -1,8 +1,20 @@
 language: node_js
+os:
+  - linux
 node_js:
   - "5.1.0"
-before_install: npm install -g grunt-cli
-install: npm install
-before_script:
-  - npm install -g grunt
-  - npm install -g jvm
+branches:
+  only:
+    - master
+    - develop
+    - /^testit-.*$/
+sudo: required
+before_install:
+      - 'sudo apt-get update -y -qq'
+      - 'sudo apt-get install -y -qq nsis'
+      - 'npm install -g bower grunt grunt-cli'
+      - 'npm install'
+install:
+  - 'npm install'
+script:
+  - 'grunt'

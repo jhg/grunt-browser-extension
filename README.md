@@ -4,16 +4,12 @@
 > Grunt plugin to create any browser website extension
 
 ## Getting Started
-This plugin requires Grunt `~0.4.5`, `jpm` and `imagemagick` installed on your system
+This plugin requires Grunt `~0.4.5` and `imagemagick` installed on your system
 
 To install imagemagick you can run next command (OSx):
 
 ```shell
 brew install imagemagick
-```
-
-```shell
-npm install -g jpm
 ```
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
@@ -45,36 +41,45 @@ grunt.initConfig({
 
 ### Options
 
-
+#### Example
 ```js
 grunt.initConfig({
-  browser_extension: {
-     default: {
-        options: {
-           variables: {
-               id: 'com.browser.extension', // required application id for Safari and Firefox
-               name: 'Browser extension', // required application name
-               version: '0.1.0', // required application version
-               host: '*.google.com', // required match host, default is *
-               description: 'browser extension', // required  description
-               author: 'Aleksey Dmitriev' // required Author
-           },
-           files: {
-               inject: {
-                   directory: 'application', // path to your application files
-                   javascripts: ['app.min.js', 'extension.js'], // list of js files relative to application directory
-                   stylesheets: ['styles.css', 'module.css'] // list of css files relative to application directory
-               },
-               icon: 'application/icon.png' // path to application icon
-           }
+    browser_extension: {
+        default: {
+            options: {
+                directory: 'test/fixtures/application',
+                id: 'com.browser.extension',
+                name: 'Browser extension',
+                version: '0.1.0',
+                host: '*.google.com',
+                description: 'browser extension',
+                author: 'Aleksey Dmitriev',
+                icon: 'icon.png',
+                content_scripts: {
+                    js: ['app.min.js'],
+                    css: ['styles.css']
+                }
+            }
         }
-       }
-  },
+    },
 });
 ```
-
+#### Options list
+ * directory: Source code directory (like ```src``` for example) where search files of extension.
+ * id: Id of extension for Safari and Firefox extension.
+ * name: Name of extension.
+ * version: Version of extension.
+ * description: Description of extension.
+ * author: Author fo extension.
+ * content_scripts: Content scripts are JavaScript files that run in the context of web pages. (Chrome, Firefox & Safari).
+ * web_accessible_resources: (Chrome).
+ * homepage_url: (Chrome).
+ * background: (Chrome).
+ * content_security_policy: (Chrome).
+ * permissions: (Chrome).
+ * chrome_url_override: (Chrome).
+ * icon: Icon of 256x256px of extension, it will generate icon16.pne, icon64.png, icon128.png and icon256.png for use in extension.
+ * browser_action: (Chrome). Remember use icon16.pne, icon64.png, icon128.png or icon256.png, it's generate from icon configuration.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-

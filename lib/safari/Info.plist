@@ -3,47 +3,83 @@
 <plist version="1.0">
 <dict>
 	<key>Author</key>
-	<string>%author%</string>
+	<string>{{author}}</string>
 	<key>Builder Version</key>
-	<string>10601.2.7.2</string>
+	<string>10601.7.7</string>
 	<key>CFBundleDisplayName</key>
-	<string>%name%</string>
+	<string>{{name}}</string>
 	<key>CFBundleIdentifier</key>
-	<string>%id%</string>
+	<string>{{id}}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>%version%</string>
+	<string>{{version}}</string>
 	<key>CFBundleVersion</key>
-	<string>%version%</string>
+	<string>1</string>
+	<key>DeveloperIdentifier</key>
+	<string>{{developer_identifier}}</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Database Quota</key>
+		<integer>1048576</integer>
+		{{#if background.scripts}}
+		<key>Global Page</key>
+		<string>background.html</string>
+		{{/if}}
+		{{#if page_action }}
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>{{page_action.callback}}</string>
+				<key>Identifier</key>
+				<string>{{page_action.id}}</string>
+				<key>Image</key>
+				<string>{{page_action.default_icon}}</string>
+				<key>Include By Default</key>
+				<true/>
+				<key>Label</key>
+				<string>{{page_action.default_title}}</string>
+			</dict>
+		</array>
+		{{/if}}
+	</dict>
+    {{#if content_scripts}}
 	<key>Content</key>
 	<dict>
 		<key>Scripts</key>
+		{{#if content_scripts.js}}
 		<dict>
 			<key>Start</key>
 			<array>
-				<string>%injectJS%</string>
+			  {{#each content_scripts.js}}
+					<string>{{this}}</string>
+			  {{/each}}
 			</array>
 		</dict>
-		<key>Stylesheets</key>
-		<array>
-			<string>%injectCSS%</string>
-		</array>
+		{{/if}}
+		{{#if content_scripts.css}}
+		<dict>
+		  <key>Stylesheets</key>
+		  <array>
+			  {{#each content_scripts.css}}
+					<string>{{this}}</string>
+			  {{/each}}
+		  </array>
+		</dict>
+		{{/if}}
 	</dict>
+    {{/if}}
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
 	<dict>
 		<key>Website Access</key>
 		<dict>
-			<key>Allowed Domains</key>
-			<array>
-				<string>%host%</string>
-			</array>
 			<key>Include Secure Pages</key>
 			<true/>
 			<key>Level</key>
-			<string>Some</string>
+			<string>All</string>
 		</dict>
 	</dict>
 </dict>
