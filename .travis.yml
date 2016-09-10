@@ -7,7 +7,6 @@ branches:
   only:
     - master
     - develop
-    - /^testit-.*$/
 sudo: required
 before_install:
       - 'sudo apt-get update -y -qq'
