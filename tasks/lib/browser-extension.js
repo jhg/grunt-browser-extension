@@ -106,23 +106,25 @@ browserExtension.prototype.copyBrowserFiles = function() {
                 name: browser
             };
             context.browser[browser] = true;
+            // Check if scripts inbackground exists in file system else remove for not render in manifiest
             if(context.background && context.background.scripts && context.background.scripts.length > 0){
                 var background_scripts_checked = [];
                 for(var counter=0; counter < context.background.scripts; counter+=1){
-                    var path_background_script = path.join(options.directory, browser, context.background.scripts[counter]);
-                    if(grunt.file.isFile(path_background_script)){
-                        background_scripts_checked.push(context.background.scripts[counter]);
+                    var background_script = context.background.scripts[counter];
+                    if(grunt.file.isFile(path.join(options.directory, browser, background_script))){
+                        background_scripts_checked.push(background_script);
+                        grunt.verbose.ok("Checked background script " + background_script + " and exists for " + browser);
                     }else{
-                        grunt.log.ok("File " + context.background.scripts[counter] + " of background scripts not found for " + browser);
+                        grunt.log.ok("File " + background_script + " of background scripts not found for " + browser);
                     }
                 }
                 if(background_scripts_checked.length > 0){
                     context.background.scripts = background_scripts_checked;
                 }else{
                     delete context.background.scripts;
-                }
-                if(Object.keys(context.background).length === 0){
-                    delete context.background;
+                    if(Object.keys(context.background).length < 1){
+                        delete context.background;
+                    }
                 }
             }
             // Render template with a context and write to file
