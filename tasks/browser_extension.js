@@ -18,6 +18,7 @@ For sign extension of Safari need two certificates that can download from Apple:
     wget https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -OAppleWWDRCA.cer
     wget https://www.apple.com/appleca/AppleIncRootCertificate.cer -OAppleIncRootCertificate.cer
 Some doc:
+    http://www.macinchem.org/reviews/safari-extensions.php
     https://github.com/Rob--W/extension-dev-tools/tree/master/safari
     http://sqa.stackexchange.com/questions/3494/unable-to-add-safari-developer-certificate-in-safari
     http://stackoverflow.com/questions/3061769/safari-doesnt-detect-my-extension-certificate
