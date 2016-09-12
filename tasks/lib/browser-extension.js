@@ -96,14 +96,35 @@ browserExtension.prototype.copyBrowserFiles = function() {
                 browser,
                 filename
             )));
+            // Check if need run a pre-processor of context
             if(Object.keys(browserProcessors).indexOf(browser) > -1){
                 pre_processor = browserProcessors[browser];
             }
             var context = pre_processor(JSON.parse(JSON.stringify(options)));
+            // Add changes in new copy of context for this loop
             context.browser = {
                 name: browser
             };
             context.browser[browser] = true;
+            if(context.background && context.background.scripts && context.background.scripts.length > 0){
+                var background_scripts_checked = [];
+                for(var counter=0; counter < context.background.scripts; counter+=1){
+                    var path_background_script = path.join(options.directory, browser, context.background.scripts[counter]);
+                    if(grunt.file.isFile(path_background_script)){
+                        background_scripts_checked.push(context.background.scripts[counter]);
+                    }else{
+                        grunt.log.ok("File " + context.background.scripts[counter] + " of background scripts not found for " + browser);
+                    }
+                }
+                if(background_scripts_checked.length > 0){
+                    context.background.scripts = background_scripts_checked;
+                }else{
+                    delete context.background.scripts;
+                }
+                if(Object.keys(context.background).length === 0){
+                    delete context.background;
+                }
+            }
             // Render template with a context and write to file
             grunt.file.write(path.join(
                 'build',
