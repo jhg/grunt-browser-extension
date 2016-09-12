@@ -240,10 +240,13 @@ browserExtension.prototype._makeIcons = function(icon) {
 };
 
 browserExtension.prototype.build = function() {
+    var tmp_dir = this._tmp_dir_path();
+    var result = 0;
+    fs.mkdir(tmp_dir);
     // Building Firefox extension
     var currentDir = shell.pwd();
     shell.cd('build/' + this.target + '/firefox/');
-    var result = shell.exec('jpm xpi', {
+    result = shell.exec('jpm xpi', {
         silent: true
     });
     if (result.code !== 0) {
@@ -256,7 +259,34 @@ browserExtension.prototype.build = function() {
     }
     shell.cd(currentDir);
     // Prepare Safari extension
-    shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/safari.safariextension');
+    shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/' + this.target + '.safariextension');
+    var sign_path = path.resolve(path.join(this.options.directory, 'sign.p12'));
+    var sign_password = this.options.sign_password;
+    if(grunt.file.isFile(sign_path)){
+        var sub_tmp_dir = '../../' + tmp_dir;
+        shell.cd('build/' + this.target);
+        shell.exec('wget https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -O' + sub_tmp_dir + '/AppleWWDRCA.cer');
+        shell.exec('wget https://www.apple.com/appleca/AppleIncRootCertificate.cer -O' + sub_tmp_dir + '/AppleIncRootCertificate.cer');
+        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleWWDRCA.cer -out ' + sub_tmp_dir + '/AppleWWDRCA.pem');
+        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleIncRootCertificate.cer -out ' + sub_tmp_dir + '/AppleIncRootCertificate.pem');
+        shell.exec('openssl pkcs12 -in ' + sign_path + ' -nokeys -out ' + sub_tmp_dir + '/cert.pem -password pass:' + sign_password);
+        shell.exec('openssl pkcs12 -nodes -in ' + sign_path + ' -nocerts -out ' + sub_tmp_dir + '/privatekey.pem -password pass:' + sign_password);
+        var xarjs_arguments = 'create ' + this.target + '.safariextz --cert ' + sub_tmp_dir + '/cert.pem --cert ' + sub_tmp_dir + '/AppleWWDRCA.pem --cert ' + sub_tmp_dir + '/AppleIncRootCertificate.pem --private-key ' + sub_tmp_dir + '/privatekey.pem ' + this.target + '.safariextension';
+        grunt.log.ok(xarjs_arguments);
+        result = shell.exec('xarjs ' + xarjs_arguments, {
+            silent: false
+        });
+        if (result.code !== 0) {
+            result = shell.exec('../../node_modules/.bin/xarjs ' + xarjs_arguments, {
+                silent: false
+            });
+            if (result.code !== 0) {
+                grunt.fail.fatal('Can not run xarjs for build safariextz for Safari');
+            }
+        }
+        shell.cd(currentDir);
+    }
+    shell.rm('-rf', tmp_dir);
     grunt.log.ok('Extensions are in build directory');
 };
 

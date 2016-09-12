@@ -18,7 +18,7 @@ exports.browser_extension = {
         test.expect(5);
         test.ok(grunt.file.isDir('build/default/chrome'));
         test.ok(grunt.file.isDir('build/default/firefox'));
-        test.ok(grunt.file.isDir('build/default/safari.safariextension'));
+        test.ok(grunt.file.isDir('build/default/default.safariextension'));
         test.ok(grunt.file.isDir('build/default/opera'));
         test.ok(grunt.file.isDir('build/default/ie'));
         test.done();
@@ -27,16 +27,16 @@ exports.browser_extension = {
         test.expect(5);
         test.ok(grunt.file.isFile('build/default/firefox/com.browser.extension.xpi'));
         test.ok(grunt.file.isFile('build/default/ie/setup.exe'));
-        test.ok(grunt.file.isFile('build/default/safari.safariextension/Info.plist'));
-        test.ok(grunt.file.isFile('build/default/safari.safariextension/Settings.plist'));
-        test.ok(grunt.file.isFile('build/default/safari.safariextension/background.html'));
+        test.ok(grunt.file.isFile('build/default/default.safariextension/Info.plist'));
+        test.ok(grunt.file.isFile('build/default/default.safariextension/Settings.plist'));
+        test.ok(grunt.file.isFile('build/default/default.safariextension/background.html'));
         test.done();
     },
     test_icons_builded: function(test) {
         test.expect(4);
         test.equal(check_image('build/default/chrome/icon.png'), 0);
         test.equal(check_image('build/default/firefox/data/icon.png'), 0);
-        test.equal(check_image('build/default/safari.safariextension/icon.png'), 0);
+        test.equal(check_image('build/default/default.safariextension/icon.png'), 0);
         test.equal(check_image('build/default/opera/icon.png'), 0);
         test.done();
     }
