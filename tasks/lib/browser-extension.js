@@ -197,7 +197,12 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
     });
 };
 
+browserExtension.prototype._tmp_dir_path = function() {
+    return path.join('build', this.target, 'tmp');
+};
+
 browserExtension.prototype._makeIcons = function(icon) {
+    var tmp_dir = this._tmp_dir_path();
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
@@ -216,22 +221,22 @@ browserExtension.prototype._makeIcons = function(icon) {
         grunt.fail.fatal('Your icon is: ' + options.height + 'px x ' + options.width + 'px');
     }
     var sizes = [16, 48, 64, 128, 256];
-    fs.mkdir('build/icons');
-    shell.cp(icon, 'build/icons/icon.png');
+    fs.mkdir(tmp_dir);
+    shell.cp(icon, path.join(tmp_dir, 'icon.png'));
     sizes.forEach(function(size) {
         var resizeArgs = [
             'convert',
             icon,
             '-resize',
             size + 'x' + size,
-            'build/icons/icon' + size + '.png'
+            path.join(tmp_dir, 'icon' + size + '.png')
         ].join(' ');
         shell.exec(resizeArgs, {
             silent: true
         });
     });
-    this._copyFiles('build/icons', ['*.png']);
-    shell.rm('-rf', 'build/icons');
+    this._copyFiles(tmp_dir, ['*.png']);
+    shell.rm('-rf', tmp_dir);
 };
 
 browserExtension.prototype.build = function() {
