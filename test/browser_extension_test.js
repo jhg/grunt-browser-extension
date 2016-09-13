@@ -24,12 +24,13 @@ exports.browser_extension = {
         test.done();
     },
     test_files_builded: function(test) {
-        test.expect(5);
+        test.expect(6);
         test.ok(grunt.file.isFile('build/default/firefox/com.browser.extension.xpi'));
         test.ok(grunt.file.isFile('build/default/ie/setup.exe'));
         test.ok(grunt.file.isFile('build/default/default.safariextension/Info.plist'));
         test.ok(grunt.file.isFile('build/default/default.safariextension/Settings.plist'));
         test.ok(grunt.file.isFile('build/default/default.safariextension/background.html'));
+        test.ok(grunt.file.isFile('build/default/default.safariextz'));
         test.done();
     },
     test_icons_builded: function(test) {
