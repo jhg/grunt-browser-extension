@@ -96,14 +96,37 @@ browserExtension.prototype.copyBrowserFiles = function() {
                 browser,
                 filename
             )));
+            // Check if need run a pre-processor of context
             if(Object.keys(browserProcessors).indexOf(browser) > -1){
                 pre_processor = browserProcessors[browser];
             }
             var context = pre_processor(JSON.parse(JSON.stringify(options)));
+            // Add changes in new copy of context for this loop
             context.browser = {
                 name: browser
             };
             context.browser[browser] = true;
+            // Check if scripts inbackground exists in file system else remove for not render in manifiest
+            if(context.background && context.background.scripts && context.background.scripts.length > 0){
+                var background_scripts_checked = [];
+                for(var counter=0; counter < context.background.scripts; counter+=1){
+                    var background_script = context.background.scripts[counter];
+                    if(grunt.file.isFile(path.join(options.directory, browser, background_script))){
+                        background_scripts_checked.push(background_script);
+                        grunt.verbose.ok("Checked background script " + background_script + " and exists for " + browser);
+                    }else{
+                        grunt.log.ok("File " + background_script + " of background scripts not found for " + browser);
+                    }
+                }
+                if(background_scripts_checked.length > 0){
+                    context.background.scripts = background_scripts_checked;
+                }else{
+                    delete context.background.scripts;
+                    if(Object.keys(context.background).length < 1){
+                        delete context.background;
+                    }
+                }
+            }
             // Render template with a context and write to file
             grunt.file.write(path.join(
                 'build',
@@ -174,7 +197,12 @@ browserExtension.prototype._copyFiles = function(applicationDir, files) {
     });
 };
 
+browserExtension.prototype._tmp_dir_path = function() {
+    return path.join('build', this.target, 'tmp');
+};
+
 browserExtension.prototype._makeIcons = function(icon) {
+    var tmp_dir = this._tmp_dir_path();
     var identifyArgs = ['identify',
         '-format',
         "'{ \"height\": %h, \"width\": %w}'",
@@ -193,29 +221,32 @@ browserExtension.prototype._makeIcons = function(icon) {
         grunt.fail.fatal('Your icon is: ' + options.height + 'px x ' + options.width + 'px');
     }
     var sizes = [16, 48, 64, 128, 256];
-    fs.mkdir('build/icons');
-    shell.cp(icon, 'build/icons/icon.png');
+    fs.mkdir(tmp_dir);
+    shell.cp(icon, path.join(tmp_dir, 'icon.png'));
     sizes.forEach(function(size) {
         var resizeArgs = [
             'convert',
             icon,
             '-resize',
             size + 'x' + size,
-            'build/icons/icon' + size + '.png'
+            path.join(tmp_dir, 'icon' + size + '.png')
         ].join(' ');
         shell.exec(resizeArgs, {
             silent: true
         });
     });
-    this._copyFiles('build/icons', ['*.png']);
-    shell.rm('-rf', 'build/icons');
+    this._copyFiles(tmp_dir, ['*.png']);
+    shell.rm('-rf', tmp_dir);
 };
 
 browserExtension.prototype.build = function() {
+    var tmp_dir = this._tmp_dir_path();
+    var result = 0;
+    fs.mkdir(tmp_dir);
     // Building Firefox extension
     var currentDir = shell.pwd();
     shell.cd('build/' + this.target + '/firefox/');
-    var result = shell.exec('jpm xpi', {
+    result = shell.exec('jpm xpi', {
         silent: true
     });
     if (result.code !== 0) {
@@ -228,7 +259,34 @@ browserExtension.prototype.build = function() {
     }
     shell.cd(currentDir);
     // Prepare Safari extension
-    shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/safari.safariextension');
+    shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/' + this.target + '.safariextension');
+    var sign_path = path.resolve(path.join(this.options.directory, 'sign.p12'));
+    var sign_password = this.options.sign_password;
+    if(grunt.file.isFile(sign_path)){
+        var sub_tmp_dir = '../../' + tmp_dir;
+        shell.cd('build/' + this.target);
+        shell.exec('wget https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -O' + sub_tmp_dir + '/AppleWWDRCA.cer');
+        shell.exec('wget https://www.apple.com/appleca/AppleIncRootCertificate.cer -O' + sub_tmp_dir + '/AppleIncRootCertificate.cer');
+        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleWWDRCA.cer -out ' + sub_tmp_dir + '/AppleWWDRCA.pem');
+        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleIncRootCertificate.cer -out ' + sub_tmp_dir + '/AppleIncRootCertificate.pem');
+        shell.exec('openssl pkcs12 -in ' + sign_path + ' -nokeys -out ' + sub_tmp_dir + '/cert.pem -password pass:' + sign_password);
+        shell.exec('openssl pkcs12 -nodes -in ' + sign_path + ' -nocerts -out ' + sub_tmp_dir + '/privatekey.pem -password pass:' + sign_password);
+        var xarjs_arguments = 'create ' + this.target + '.safariextz --cert ' + sub_tmp_dir + '/cert.pem --cert ' + sub_tmp_dir + '/AppleWWDRCA.pem --cert ' + sub_tmp_dir + '/AppleIncRootCertificate.pem --private-key ' + sub_tmp_dir + '/privatekey.pem ' + this.target + '.safariextension';
+        grunt.log.ok(xarjs_arguments);
+        result = shell.exec('xarjs ' + xarjs_arguments, {
+            silent: false
+        });
+        if (result.code !== 0) {
+            result = shell.exec('../../node_modules/.bin/xarjs ' + xarjs_arguments, {
+                silent: false
+            });
+            if (result.code !== 0) {
+                grunt.fail.fatal('Can not run xarjs for build safariextz for Safari');
+            }
+        }
+        shell.cd(currentDir);
+    }
+    shell.rm('-rf', tmp_dir);
     grunt.log.ok('Extensions are in build directory');
 };
 
