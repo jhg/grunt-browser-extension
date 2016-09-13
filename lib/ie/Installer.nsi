@@ -87,7 +87,7 @@ Section "DATA"
 SectionEnd
 
 Section "Open TYP"
-	ExecShell "open" "iexplore.exe" "${HOME_URL}?InstallIE=true"
+	ExecShell "open" "iexplore.exe" "${success_url}?InstallIE=true"
 SectionEnd
 
 Section "Uninstall"
