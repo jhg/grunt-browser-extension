@@ -260,32 +260,36 @@ browserExtension.prototype.build = function() {
     shell.cd(currentDir);
     // Prepare Safari extension
     shell.mv('build/' + this.target + '/safari', 'build/' + this.target + '/' + this.target + '.safariextension');
-    var sign_path = path.resolve(path.join(this.options.directory, 'sign.p12'));
     var sign_password = this.options.sign_password;
-    if(grunt.file.isFile(sign_path)){
-        var sub_tmp_dir = '../../' + tmp_dir;
-        shell.cd('build/' + this.target);
-        shell.exec('wget https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -O' + sub_tmp_dir + '/AppleWWDRCA.cer');
-        shell.exec('wget https://www.apple.com/appleca/AppleIncRootCertificate.cer -O' + sub_tmp_dir + '/AppleIncRootCertificate.cer');
-        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleWWDRCA.cer -out ' + sub_tmp_dir + '/AppleWWDRCA.pem');
-        shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleIncRootCertificate.cer -out ' + sub_tmp_dir + '/AppleIncRootCertificate.pem');
-        shell.exec('openssl pkcs12 -in ' + sign_path + ' -nokeys -out ' + sub_tmp_dir + '/cert.pem -password pass:' + sign_password);
-        shell.exec('openssl pkcs12 -nodes -in ' + sign_path + ' -nocerts -out ' + sub_tmp_dir + '/privatekey.pem -password pass:' + sign_password);
-        var xarjs_arguments = 'create ' + this.target + '.safariextz --cert ' + sub_tmp_dir + '/cert.pem --cert ' + sub_tmp_dir + '/AppleWWDRCA.pem --cert ' + sub_tmp_dir + '/AppleIncRootCertificate.pem --private-key ' + sub_tmp_dir + '/privatekey.pem ' + this.target + '.safariextension';
-        grunt.log.ok(xarjs_arguments);
-        result = shell.exec('xarjs ' + xarjs_arguments, {
+    var sign_path = path.resolve(path.join('.signs', this.options.sign_name + '.p12'));
+    var sub_tmp_dir = '../../' + tmp_dir;
+    var xarjs_arguments = 'create ' + this.target + '.safariextz ' + this.target + '.safariextension';
+    shell.cd('build/' + this.target);
+    if(sign_password && grunt.file.isFile(sign_path)){
+        var total_result = 0;
+        total_result += shell.exec('wget https://developer.apple.com/certificationauthority/AppleWWDRCA.cer -O' + sub_tmp_dir + '/AppleWWDRCA.cer').result.code;
+        total_result += shell.exec('wget https://www.apple.com/appleca/AppleIncRootCertificate.cer -O' + sub_tmp_dir + '/AppleIncRootCertificate.cer').result.code;
+        total_result += shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleWWDRCA.cer -out ' + sub_tmp_dir + '/AppleWWDRCA.pem').result.code;
+        total_result += shell.exec('openssl x509 -inform der -in ' + sub_tmp_dir + '/AppleIncRootCertificate.cer -out ' + sub_tmp_dir + '/AppleIncRootCertificate.pem').result.code;
+        total_result += shell.exec('openssl pkcs12 -in ' + sign_path + ' -nokeys -out ' + sub_tmp_dir + '/cert.pem -password pass:' + sign_password).result.code;
+        total_result += shell.exec('openssl pkcs12 -nodes -in ' + sign_path + ' -nocerts -out ' + sub_tmp_dir + '/privatekey.pem -password pass:' + sign_password).result.code;
+        if(total_result > 0){
+            grunt.fail.fatal('Some step for prepare sign of Safari extension fail');
+        }
+        xarjs_arguments = 'create ' + this.target + '.safariextz --cert ' + sub_tmp_dir + '/cert.pem --cert ' + sub_tmp_dir + '/AppleWWDRCA.pem --cert ' + sub_tmp_dir + '/AppleIncRootCertificate.pem --private-key ' + sub_tmp_dir + '/privatekey.pem ' + this.target + '.safariextension';
+    }
+    result = shell.exec('xarjs ' + xarjs_arguments, {
+        silent: false
+    });
+    if (result.code !== 0) {
+        result = shell.exec('../../node_modules/.bin/xarjs ' + xarjs_arguments, {
             silent: false
         });
         if (result.code !== 0) {
-            result = shell.exec('../../node_modules/.bin/xarjs ' + xarjs_arguments, {
-                silent: false
-            });
-            if (result.code !== 0) {
-                grunt.fail.fatal('Can not run xarjs for build safariextz for Safari');
-            }
+            grunt.fail.fatal('Can not run xarjs for build safariextz for Safari');
         }
-        shell.cd(currentDir);
     }
+    shell.cd(currentDir);
     shell.rm('-rf', tmp_dir);
     grunt.log.ok('Extensions are in build directory');
 };
